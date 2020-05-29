@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Рената Исмагилова](https://up.htmlacademy.ru/javascript/20/user/1462177).
-* Наставник: [Ирина Захарова].
+* Наставник: [Ирина Захарова] (https://htmlacademy.ru/profile/id462703).
 
 ---
 
