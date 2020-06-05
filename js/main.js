@@ -21,7 +21,7 @@ var commentsGeneration = function (commentsEmpty) {
 // функция возвращает массив из  25 объектов, который нам нужен
 var objectGeneration = function (arrEmpty) {
 
-  for (var i = 0; i < 25; i++) {
+  for (var i = 1; i < 26; i++) {
     var object = {};
     object.url = 'photos/' + i + '.jpg';
     object.description = '';
@@ -43,7 +43,7 @@ var getPhotos = function (number) {
 };
 // здесь через DocumentFragme хочу вставить в блок .pictures фотографии и описание
 var fragment = document.createDocumentFragment();
-for (var i = 0; i < 25; i++) {
+for (var i = 1; i < 26; i++) {
   fragment.appendChild(getPhotos(i));
 }
 picturesWindow.appendChild(fragment);
