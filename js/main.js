@@ -8,25 +8,30 @@ var messageRandom = ['Всё отлично!', 'В целом всё непло�
 var nameAuthorsRandom = ['Апполон', 'Гера', 'Афродита', 'Гермес', 'Эрот', 'Афина'];
 
 // функция возвращает список комментариев для какой-нибудь фотографии
-var commentsGeneration = function (commentsEmpty) {
+var commentsGeneration = function () {
+  var commentsEmpty = [];
   for (var i = 0; i <= Math.floor(Math.random() * 7); i++) {
     var object = {};
-    object.avatar = '"img/avatar-' + (Math.floor(Math.random() * (6 - 1)) + 1) + '.svg"';
-    object.message = messageRandom[Math.floor(Math.random() * (6 - 1)) + 1];
-    object.name = nameAuthorsRandom[Math.floor(Math.random() * (6 - 1)) + 1];
+    object.avatar = '"img/avatar-' + (Math.floor(Math.random() * (nameAuthorsRandom.length - 1)) + 1) + '.svg"';
+    if (Math.floor(Math.random() * 2) === 1) {
+      object.message = messageRandom[Math.floor(Math.random() * (messageRandom.length - 1)) + 1] + messageRandom[Math.floor(Math.random() * (messageRandom.length - 1)) + 1];
+    } else {
+      object.message = messageRandom[Math.floor(Math.random() * (messageRandom.length - 1)) + 1];
+    }
+    object.name = nameAuthorsRandom[Math.floor(Math.random() * (nameAuthorsRandom.length - 1)) + 1];
     commentsEmpty[i] = object;
   }
   return commentsEmpty;
 };
 // функция возвращает массив из  25 объектов, который нам нужен
-var objectGeneration = function (arrEmpty) {
-
+var objectGeneration = function () {
+  var arrEmpty = [];
   for (var i = 1; i < 26; i++) {
     var object = {};
     object.url = 'photos/' + i + '.jpg';
     object.description = '';
     object.likes = Math.floor(Math.random() * (200 - 15)) + 15;
-    object.comments = commentsGeneration([]);
+    object.comments = commentsGeneration();
     arrEmpty[i] = object;
   }
   return arrEmpty;
@@ -34,7 +39,7 @@ var objectGeneration = function (arrEmpty) {
 
 // функция создает элементы  каждой фотографии под порядковым номером number
 var getPhotos = function (number) {
-  var arrow = objectGeneration([]);
+  var arrow = objectGeneration();
   var photoElement = picturesTemplate.cloneNode(true);
   photoElement.querySelector('.picture__img').src = arrow[number].url;
   photoElement.querySelector('.picture__likes').textContent = arrow[number].likes;
