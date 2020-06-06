@@ -14,7 +14,12 @@ var commentsGeneration = function () {
     var object = {};
     object.avatar = '"img/avatar-' + (Math.floor(Math.random() * (nameAuthorsRandom.length - 1)) + 1) + '.svg"';
     if (Math.floor(Math.random() * 2) === 1) {
-      object.message = messageRandom[Math.floor(Math.random() * (messageRandom.length - 1)) + 1] + messageRandom[Math.floor(Math.random() * (messageRandom.length - 1)) + 1];
+      var message1 = messageRandom[Math.floor(Math.random() * (messageRandom.length - 1)) + 1];
+      var message2 = messageRandom[Math.floor(Math.random() * (messageRandom.length - 1)) + 1];
+      while (message1 === message2) {
+        message2 = messageRandom[Math.floor(Math.random() * (messageRandom.length - 1)) + 1];
+      }
+      object.message = message1 + message2;
     } else {
       object.message = messageRandom[Math.floor(Math.random() * (messageRandom.length - 1)) + 1];
     }
