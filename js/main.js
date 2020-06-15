@@ -4,6 +4,7 @@ var picturesTemplate = document.querySelector('#picture')
 .querySelector('.picture');
 var picturesWindow = document.querySelector('.pictures');
 
+
 var messageRandom = ['Всё отлично!', 'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.', 'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.', 'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
 var nameAuthorsRandom = ['Апполон', 'Гера', 'Афродита', 'Гермес', 'Эрот', 'Афина'];
 
@@ -41,10 +42,10 @@ var objectGeneration = function () {
   }
   return arrEmpty;
 };
-
+var arrow = objectGeneration();
 // функция создает элементы  каждой фотографии под порядковым номером number
 var getPhotos = function (number) {
-  var arrow = objectGeneration();
+
   var photoElement = picturesTemplate.cloneNode(true);
   photoElement.querySelector('.picture__img').src = arrow[number].url;
   photoElement.querySelector('.picture__likes').textContent = arrow[number].likes;
@@ -57,3 +58,37 @@ for (var i = 1; i < 26; i++) {
   fragment.appendChild(getPhotos(i));
 }
 picturesWindow.appendChild(fragment);
+
+// для первого элемента вывод большого изображения
+
+var bigWindow = document.querySelector('.big-picture');
+var socialCommentTemplateContent = document.querySelector('#social__comment_template').content;
+var socialCommentTemplate = socialCommentTemplateContent.querySelector('.social__comment');
+var similarListElement = bigWindow.querySelector('.social__comments');
+var socialCommentCount = bigWindow.querySelector('.social__comment-count');
+var commentsLoader = bigWindow.querySelector('.comments-loader');
+
+bigWindow.classList.remove('hidden');
+
+bigWindow.querySelector('.big-picture__img img').src = arrow[1].url;
+bigWindow.querySelector('.likes-count').textContent = arrow[1].likes;
+bigWindow.querySelector('.comments-count').textContent = arrow[1].comments.length;
+bigWindow.querySelector('.social__caption').textContent = arrow[1].description;
+
+var getSosialComment = function (commentNumber) {
+  var socialCommentListElement = socialCommentTemplate.cloneNode(true);
+
+  socialCommentListElement.querySelector('.social__picture').src = arrow[1].comments[commentNumber].avatar;
+  socialCommentListElement.querySelector('.social__picture').alt = arrow[1].comments[commentNumber].name;
+  socialCommentListElement.querySelector('.social__text').textContent = arrow[1].comments[commentNumber].message;
+  return socialCommentListElement;
+};
+
+var fragmentCommentBigPhoto = document.createDocumentFragment();
+for (var commentNumber = 0; commentNumber < arrow[1].comments.length; commentNumber++) {
+  fragmentCommentBigPhoto.appendChild(getSosialComment(commentNumber));
+}
+similarListElement.appendChild(fragmentCommentBigPhoto);
+socialCommentCount.classList.add('hidden');
+commentsLoader.classList.add('hidden');
+document.querySelector('body').classList.add('modal-open');
