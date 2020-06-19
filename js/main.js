@@ -1,6 +1,3 @@
-/* eslint-disable semi */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-undef */
 'use strict';
 (function () {
   var picturesTemplate = document.querySelector('#picture')
@@ -98,23 +95,25 @@
   commentsLoader.classList.add('hidden');
 
   // дом задание лекция 4
-  var uploadField = picturesWindow.querySelector('#upload-file'); // поле выбора файла
+  var uploadField = picturesWindow.querySelector('#upload-file');// поле выбора файла
   var uploadCansel = picturesWindow.querySelector('#upload-cancel');
   var editForm = picturesWindow.querySelector('.img-upload__overlay');
 
-  var effectLevelSlider = picturesWindow.querySelector('.effect-level__pin'); // ползунок
-  var effectLevelLine = picturesWindow.querySelector('.effect-level__line'); // линия границ ползунка
-  var effectLevelDepth = picturesWindow.querySelector('.effect-level__depth');
-  var effectLevelInput = picturesWindow.querySelector('.effect-level__value');
+  var fieldsetEffectLevel = picturesWindow.querySelector('.img-upload__effect-level');
+  var effectLevelSlider = fieldsetEffectLevel.querySelector('.effect-level__pin');// ползунок
+  // var effectLevelLine = fieldsetEffectLevel.querySelector('.effect-level__depth');
+  var effectLevelInput = fieldsetEffectLevel.querySelector('.effect-level__value');
   var fieldsetFilterList = picturesWindow.querySelector('.img-upload__effects');
 
   var fieldsetHashtag = picturesWindow.querySelector('.img-upload__text');
   var textHashtag = fieldsetHashtag.querySelector('.text__hashtags');
   var uploadSubmit = picturesWindow.querySelector('.img-upload__submit');
-  // todo: заменила на Regexp, иначе были ошибки, не совсем понятно с чем связанные
-  var reg = new RegExp('^#[a-zA-Z0-9_]{1,20}$');
-  var NULL_WIDTH = 20;
-  var currentWidth = NULL_WIDTH;
+  // var reg = /^#[a-zA-Z0-9_]{1,20}$/ig;
+  var image = document.querySelector('.img-upload__preview');
+  // var NULL_POSITION = 488;
+  // var NULL_WIDTH = 20;
+  var chosenEffect = 'none';
+
   var onPopupEscPress = function (evt) {
     if (evt.key === 'Escape') {
       evt.preventDefault();
@@ -124,72 +123,17 @@
   var openPopup = function () {
     document.querySelector('body').classList.add('modal-open');
     document.addEventListener('keydown', onPopupEscPress);
+    if (chosenEffect === 'none') {
+      image.style.filter = '';
+      fieldsetEffectLevel.classList.add('visually-hidden');
+    }
   };
 
   var closePopup = function () {
     document.querySelector('body').classList.remove('modal-open');
     document.removeEventListener('keydown', onPopupEscPress);
-    uploadField.value = '';
-    // сброс значения поля выбора
+    uploadField.value = ''; // сброс значения поля выбора
   };
-
-  var computePosition = function (clientXCursor) {
-    // todo: lineWidth не вынесено в переменную, потому что при свойстве display: none рассчитать
-    //  размеры элементов нельзя, поэтому добавлять расчёт ширины нужно после отображения элемента на странице
-    var lineWidth = effectLevelLine.offsetWidth;
-    var lineLeftPosition = effectLevelLine.getBoundingClientRect().left;
-    var updatedPercentagePosition = Math.round(100 / (lineWidth / (clientXCursor - lineLeftPosition)));
-    if (currentWidth !== updatedPercentagePosition) {
-      updateSliderPosition(updatedPercentagePosition)
-    }
-  }
-
-  var updateSliderPosition = function (newPosition) {
-    if (newPosition >= 0 && newPosition <= 100) {
-      effectLevelSlider.style.left = newPosition + '%'
-      effectLevelDepth.style.width = newPosition + '%';
-      effectLevelInput.value = newPosition;
-    }
-  }
-  // todo: evt сюда не передаётся и здесь не вызывается, иначе ошибки не отображаются
-  var checkHashtags = function () {
-    var hashtagLine = textHashtag.value ? textHashtag.value : false;
-    if (hashtagLine) {
-      var hashtagArr = hashtagLine.toLowerCase().split(' ');
-      var listOfErrors = {
-        repeated: false,
-        maxLimit: false,
-        syntaxError: false
-      }
-      var uniqueTags = [];
-      var mistakes = '';
-      if (hashtagArr.length > 5) {
-        listOfErrors.maxLimit = true;
-      }
-      for (var hash = 0; hash < hashtagArr.length; hash++) {
-        if (!uniqueTags.includes(hashtagArr[hash])) {
-          uniqueTags.push(hashtagArr[hash]);
-        } else {
-          listOfErrors.repeated = true;
-        }
-        if (!reg.test(hashtagArr[hash])) {
-          listOfErrors.syntaxError = true;
-        }
-      }
-      if (listOfErrors.repeated) {
-        mistakes += 'теги повторяются!  '
-      }
-      if (listOfErrors.maxLimit) {
-        mistakes += 'Нельзя использовать более 5ти хештегов! '
-      }
-      if (listOfErrors.syntaxError) {
-        mistakes += 'Некорректно введен хештег! '
-      }
-      if (mistakes.length) {
-        textHashtag.setCustomValidity(mistakes);
-      }
-    }
-  }
 
   uploadField.addEventListener('change', function () {
     openPopup();
@@ -200,22 +144,92 @@
     closePopup();
   });
 
-  // координата по х отпускания мыши
-  effectLevelSlider.addEventListener('mouseup', function (evt) {
-    computePosition(evt.pageX)
-  });
+  var effecs = {
+    chrome: {
+      filter: 'grayscale(1)',
+      meaning: 1,
+      effect: 'grayscale'
+    },
+    sepia: {
+      filter: 'sepia(1)',
+      meaning: 1,
+      effect: 'sepia'
+    },
+    marvin: {
+      filter: 'invert(100%)',
+      meaning: 100,
+      effect: 'invert'
+    },
+    phobos: {
+      filter: 'blur(3px)',
+      meaning: 3,
+      effect: 'blur'
+    },
+    heat: {
+      filter: 'brightness(3)',
+      meaning: 3,
+      effect: 'brightness'
+    }
+  };
+
   // обработчик на радиокнопки (при изменении состояния возращает начальное положение )
-  fieldsetFilterList.addEventListener('change', function () {
-    updateSliderPosition(NULL_WIDTH)
-    // effectLevelLine.style.width = NULL_WIDTH + '%';
-    // effectLevelSlider.style.left = NULL_WIDTH + '%';
-    // effectLevelInput.value = NULL_WIDTH;
+  fieldsetFilterList.addEventListener('change', function (evt) {
+    chosenEffect = evt.target.value;
+
+    if (chosenEffect === 'none') {
+      image.style.filter = '';
+      fieldsetEffectLevel.classList.add('visually-hidden');
+    } else {
+      fieldsetEffectLevel.classList.remove('visually-hidden');
+      image.style = 'filter: ' + effecs[chosenEffect].filter;
+      // нужно прописать для ползунка изменения и линии, но это потом, и думаю сейчас не нужно
+    }
+
   });
 
-  // todo: удалила обработчик события input, который был внутри этого события, т.к. в задании не видела,
-  //  что проверки должны срабатывать при каждом изменении полей формы. Ещё, заменила сам обработчик -
-  //  с submit на click, т.к. в submit не срабатывал preventDefault и форма сразу же отправлялась
-  uploadSubmit.addEventListener('click', function (evt) {
-    checkHashtags(evt);
+  effectLevelSlider.addEventListener('mouseup', function () {
+    var levelPosition = effecs[chosenEffect].meaning / 100 * effectLevelInput.value;
+    image.style = 'color: red';
+    if ((chosenEffect === 'marvin') || (chosenEffect === 'phobos')) {
+      if (chosenEffect === 'marvin') {
+        image.style = 'filter: ' + effecs[chosenEffect].effect + '(' + levelPosition + '%' + ')';
+      }
+      if (chosenEffect === 'phobos') {
+        image.style = 'filter: ' + effecs[chosenEffect].effect + '(' + levelPosition + 'px' + ')';
+      }
+    } else {
+      image.style = 'filter: ' + effecs[chosenEffect].effect + '(' + levelPosition + ')';
+    }
+    // var newWidth = e.clientX * NULL_WIDTH / NULL_POSITION;
+    //   effectLevelSlider.style.left = newWidth + '%';
+    //   effectLevelLine.style.width = newWidth + '%';
+    //   effectLevelInput.value = newWidth;
+    // координата по х отпускания мыши
+  });
+
+  uploadSubmit.addEventListener('click', function () {
+    var hashtagLine = textHashtag.value;
+    if (hashtagLine) {
+      var hashtagArr = hashtagLine.toLowerCase().split(' ');
+
+      for (var hash = 0; hash < hashtagArr.length; hash++) {
+        if (/^#[a-zA-Z0-9_]{1,20}$/ig.test(hashtagArr[hash])) {
+          var hashExamle = hashtagArr[hash];
+          for (var k = hash + 1; k < hashtagArr.length; k++) {
+            if (hashExamle === hashtagArr[k]) {
+              textHashtag.setCustomValidity('Нельзя вводить один и тот же хештег!');
+            } else {
+              textHashtag.setCustomValidity('');
+            }
+          }
+        } else {
+          textHashtag.setCustomValidity('Некорректно введен хештег!');
+        }
+      }
+      if (hashtagArr.length > 5) {
+        textHashtag.setCustomValidity('Нельзя использовать более 5ти хештегов!');
+      }
+
+    }
   });
 }());
