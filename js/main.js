@@ -108,7 +108,7 @@
   var fieldsetHashtag = picturesWindow.querySelector('.img-upload__text');
   var textHashtag = fieldsetHashtag.querySelector('.text__hashtags');
   var uploadSubmit = picturesWindow.querySelector('.img-upload__submit');
-  // var reg = /^#[a-zA-Z0-9_]{1,20}$/ig;
+  var reg = new RegExp('^#[a-zA-Z0-9_]{1,20}$');
   var image = document.querySelector('.img-upload__preview');
   // var NULL_POSITION = 488;
   // var NULL_WIDTH = 20;
@@ -134,16 +134,6 @@
     document.removeEventListener('keydown', onPopupEscPress);
     uploadField.value = ''; // сброс значения поля выбора
   };
-
-  uploadField.addEventListener('change', function () {
-    openPopup();
-    editForm.classList.remove('hidden');
-  });
-
-  uploadCansel.addEventListener('click', function () {
-    closePopup();
-  });
-
   var effecs = {
     chrome: {
       filter: 'grayscale(1)',
@@ -171,23 +161,7 @@
       effect: 'brightness'
     }
   };
-
-  // обработчик на радиокнопки (при изменении состояния возращает начальное положение )
-  fieldsetFilterList.addEventListener('change', function (evt) {
-    chosenEffect = evt.target.value;
-
-    if (chosenEffect === 'none') {
-      image.style.filter = '';
-      fieldsetEffectLevel.classList.add('visually-hidden');
-    } else {
-      fieldsetEffectLevel.classList.remove('visually-hidden');
-      image.style = 'filter: ' + effecs[chosenEffect].filter;
-      // нужно прописать для ползунка изменения и линии, но это потом, и думаю сейчас не нужно
-    }
-
-  });
-
-  effectLevelSlider.addEventListener('mouseup', function () {
+  var computePosition = function () {
     var levelPosition = effecs[chosenEffect].meaning / 100 * effectLevelInput.value;
     image.style = 'color: red';
     if ((chosenEffect === 'marvin') || (chosenEffect === 'phobos')) {
@@ -205,31 +179,105 @@
     //   effectLevelLine.style.width = newWidth + '%';
     //   effectLevelInput.value = newWidth;
     // координата по х отпускания мыши
-  });
+  };
+  var updateSliderPosition = function (evt) {
+    chosenEffect = evt.target.value;
 
-  uploadSubmit.addEventListener('click', function () {
-    var hashtagLine = textHashtag.value;
+    if (chosenEffect === 'none') {
+      image.style.filter = '';
+      fieldsetEffectLevel.classList.add('visually-hidden');
+    } else {
+      fieldsetEffectLevel.classList.remove('visually-hidden');
+      image.style = 'filter: ' + effecs[chosenEffect].filter;
+    }
+  };
+
+  // uploadSubmit.addEventListener('click', function () {
+  //   var hashtagLine = textHashtag.value;
+  //   if (hashtagLine) {
+  //     var hashtagArr = hashtagLine.toLowerCase().split(' ');
+
+  //     for (var hash = 0; hash < hashtagArr.length; hash++) {
+  //       if (/^#[a-zA-Z0-9_]{1,20}$/ig.test(hashtagArr[hash])) {
+  //         var hashExamle = hashtagArr[hash];
+  //         for (var k = hash + 1; k < hashtagArr.length; k++) {
+  //           if (hashExamle === hashtagArr[k]) {
+  //             textHashtag.setCustomValidity('Нельзя вводить один и тот же хештег!');
+  //           } else {
+  //             textHashtag.setCustomValidity('');
+  //           }
+  //         }
+  //       } else {
+  //         textHashtag.setCustomValidity('Некорректно введен хештег!');
+  //       }
+  //     }
+  //     if (hashtagArr.length > 5) {
+  //       textHashtag.setCustomValidity('Нельзя использовать более 5ти хештегов!');
+  //     }
+
+  //   }
+  // });
+  var checkHashtags = function () {
+    var hashtagLine = textHashtag.value ? textHashtag.value : false;
     if (hashtagLine) {
       var hashtagArr = hashtagLine.toLowerCase().split(' ');
-
+      var listOfErrors = {
+        repeated: false,
+        maxLimit: false,
+        syntaxError: false
+      };
+      var uniqueTags = [];
+      var mistakes = '';
+      if (hashtagArr.length > 5) {
+        listOfErrors.maxLimit = true;
+      }
       for (var hash = 0; hash < hashtagArr.length; hash++) {
-        if (/^#[a-zA-Z0-9_]{1,20}$/ig.test(hashtagArr[hash])) {
-          var hashExamle = hashtagArr[hash];
-          for (var k = hash + 1; k < hashtagArr.length; k++) {
-            if (hashExamle === hashtagArr[k]) {
-              textHashtag.setCustomValidity('Нельзя вводить один и тот же хештег!');
-            } else {
-              textHashtag.setCustomValidity('');
-            }
-          }
+        if (!uniqueTags.includes(hashtagArr[hash])) {
+          uniqueTags.push(hashtagArr[hash]);
         } else {
-          textHashtag.setCustomValidity('Некорректно введен хештег!');
+          listOfErrors.repeated = true;
+        }
+        if (!reg.test(hashtagArr[hash])) {
+          listOfErrors.syntaxError = true;
         }
       }
-      if (hashtagArr.length > 5) {
-        textHashtag.setCustomValidity('Нельзя использовать более 5ти хештегов!');
+      if (listOfErrors.repeated) {
+        mistakes += 'теги повторяются! ';
       }
-
+      if (listOfErrors.maxLimit) {
+        mistakes += 'Нельзя использовать более 5ти хештегов!';
+      }
+      if (listOfErrors.syntaxError) {
+        mistakes += 'Некорректно введен хештег!';
+      }
+      if (mistakes.length) {
+        textHashtag.setCustomValidity(mistakes);
+      }
     }
+  };
+  uploadField.addEventListener('change', function () {
+    openPopup();
+    editForm.classList.remove('hidden');
   });
+
+  uploadCansel.addEventListener('click', function () {
+    closePopup();
+  });
+  uploadField.addEventListener('change', function () {
+    openPopup();
+    editForm.classList.remove('hidden');
+  });
+  uploadSubmit.addEventListener('click', function (evt) {
+    checkHashtags(evt);
+  });
+  // обработчик на радиокнопки (при изменении состояния возращает начальное положение )
+  fieldsetFilterList.addEventListener('change', function (evt) {
+    updateSliderPosition(evt);
+    // нужно прописать для ползунка изменения и линии, но это потом, и думаю сейчас не нужно
+  });
+
+  effectLevelSlider.addEventListener('mouseup', function (evt) {
+    computePosition(evt.pageX);
+  });
+
 }());
