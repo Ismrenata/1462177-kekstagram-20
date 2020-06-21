@@ -69,10 +69,10 @@
   var similarListElement = bigWindow.querySelector('.social__comments');
   var socialCommentCount = bigWindow.querySelector('.social__comment-count');
   var commentsLoader = bigWindow.querySelector('.comments-loader');
-  var photosArray = picturesWindow.querySelectorAll('.picture__img');
+  // var photosArray = picturesWindow.querySelectorAll('.picture__img');
   var canselBigPhoto = bigWindow.querySelector('.big-picture__cancel');
 
- // для всех элементов  вывод большого изображения
+  // для всех элементов  вывод большого изображения
   var getSosialComment = function (commentNumber, currentPhotoNumber) {
     var socialCommentListElement = socialCommentTemplate.cloneNode(true);
     socialCommentListElement.querySelector('.social__picture').src = arrow[currentPhotoNumber].comments[commentNumber].avatar;
@@ -81,7 +81,7 @@
     return socialCommentListElement;
   };
   // создание фрагмента списка комментов к фотке и добавление его к нужному элементу окна
-    var commentFragmentCreation = function (currentPhotoNumber) {
+  var commentFragmentCreation = function (currentPhotoNumber) {
     var fragmentCommentBigPhoto = document.createDocumentFragment();
     for (var commentNumber = 0; commentNumber < arrow[currentPhotoNumber].comments.length; commentNumber++) {
       fragmentCommentBigPhoto.appendChild(getSosialComment(commentNumber, currentPhotoNumber));
@@ -101,8 +101,8 @@
     bigWindow.querySelector('.likes-count').textContent = arrow[currentPhotoNumber].likes;
     bigWindow.querySelector('.comments-count').textContent = arrow[currentPhotoNumber].comments.length;
     bigWindow.querySelector('.social__caption').textContent = arrow[currentPhotoNumber].description;
-    // socialCommentCount.classList.add('hidden');
-    // commentsLoader.classList.add('hidden');
+    socialCommentCount.classList.add('hidden');
+    commentsLoader.classList.add('hidden');
     bigWindow.classList.remove('hidden');
     document.addEventListener('keydown', onBigPhotoEscPress);
     commentFragmentCreation(currentPhotoNumber);
@@ -112,13 +112,10 @@
   var closeBigPhoto = function () {
     bigWindow.classList.add('hidden');
     document.removeEventListener('keydown', onBigPhotoEscPress);
-    console.log(similarListElement.length);
-    }
 
   };
 
-
-// хотела сделать открытие по ENTer, что-то табуляция не работает
+  // хотела сделать открытие по ENTer, что-то табуляция не работает
   // for (var l = 0; l < photosArray.length; l++) {
   //   photosArray[l].addEventListener('keydown', function (evt) {
   //     if (evt.key === 'Enter') {
