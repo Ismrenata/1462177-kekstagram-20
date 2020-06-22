@@ -30,7 +30,7 @@
       <section class="img-upload">
         <div class="img-upload__wrapper">
           <h2 class="img-upload__title  visually-hidden">Загрузка фотографии</h2>
-          <form class="img-upload__form" id="upload-select-image" method="post" enctype="multipart/form-data" autocomplete="off">
+          <form class="img-upload__form" id="upload-select-image" method="post" action="https://javascript.pages.academy/kekstagram" enctype="multipart/form-data" autocomplete="off">
 
             <!-- Изначальное состояние поля для загрузки изображения -->
             <fieldset class="img-upload__start">
@@ -154,16 +154,7 @@
 
           <!-- Комментарии к изображению -->
           <div class="social__comment-count">5 из <span class="comments-count">125</span> комментариев</div>
-          <ul class="social__comments">
-            <li class="social__comment">
-              <img class="social__picture" src="img/avatar-4.svg" alt="Аватар комментатора фотографии" width="35" height="35">
-              <p class="social__text">Мега фото! Просто обалдеть. Как вам так удалось?</p>
-            </li>
-            <li class="social__comment">
-              <img class="social__picture" src="img/avatar-3.svg" alt="Аватар комментатора фотографии" width="35" height="35">
-               <p class="social__text">Да это фоташоп!!!!!!!!</p>
-            </li>
-          </ul>
+          <ul class="social__comments"></ul>
 
           <!-- Кнопка для загрузки новой порции комментариев -->
           <button type="button" class="social__comments-loader  comments-loader">Загрузить еще</button>
@@ -196,11 +187,17 @@
       </ul>
     </div>
   </footer>
-
+  <!--для загрузки случайных комментариев-->
+<template id="social__comment_template">
+  <li class="social__comment">
+    <img class="social__picture" src="avatar" alt="" width="35" height="35">
+    <p class="social__text"></p>
+  </li>
+</template>
   <!-- Шаблон изображения случайного пользователя -->
   <template id="picture">
     <a href="#" class="picture">
-      <img class="picture__img" src="" width="182" height="182" alt="Случайная фотография">
+      <img class="picture__img" src="" width="182" height="182" alt="Случайная фотография" tabindex="0">
       <p class="picture__info">
         <span class="picture__comments"></span>
         <span class="picture__likes"></span>
