@@ -15,8 +15,6 @@
 
   var uploadSubmit = picturesWindow.querySelector('.img-upload__submit'); // кнопка отправки формы
 
-
-
   var onPopupEscPress = function (evt) {
     if (evt.key === 'Escape') {
       evt.preventDefault();
