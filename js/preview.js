@@ -1,16 +1,13 @@
 'use strict';
 (function () {
 // отрисовка большого изображения, его открытие при клике и закрытие
-  var picturesWindow = document.querySelector('.pictures');// ?
-
   var bigWindow = document.querySelector('.big-picture');
+  var picturesImages = document.querySelectorAll('.picture');
   var socialCommentTemplateContent = document.querySelector('#social__comment_template').content;
   var socialCommentTemplate = socialCommentTemplateContent.querySelector('.social__comment');
   var similarListElement = bigWindow.querySelector('.social__comments');
-
   var socialCommentCount = bigWindow.querySelector('.social__comment-count'); // используется, чтобы добавить класс hidden
   var commentsLoader = bigWindow.querySelector('.comments-loader'); // используется, чтобы добавить класс hidden
-  var photosArray = picturesWindow.querySelectorAll('.picture__img'); // для открытия по enter с клавиатуры
   var canselBigPhoto = bigWindow.querySelector('.big-picture__cancel'); // кнопка закрытия крестик
   var commentWriteField = bigWindow.querySelector('.social__footer-text'); // поле ввода коммента используется в esc
 
@@ -35,7 +32,7 @@
   };
 
   // функция заполняет информацией изображения: адрес, лайки комменты, описание в большое окно
-  var bidPhotoCompilation = function (evt, currentPhotoNumber) {
+  var bidPhotoCompilation = function (currentPhotoNumber) {
     bigWindow.querySelector('.big-picture__img img').src = arrow[currentPhotoNumber].url;
     bigWindow.querySelector('.likes-count').textContent = arrow[currentPhotoNumber].likes;
     bigWindow.querySelector('.comments-count').textContent = arrow[currentPhotoNumber].comments.length;
@@ -54,9 +51,9 @@
   };
 
   // заполнение списка комментариев
-  var openBigPhoto = function (evt) {
-    var currentPhotoNumber = Number(/\d+(?=\.)/.exec(evt.target.src)[0]);
-    bidPhotoCompilation(evt, currentPhotoNumber);
+  var openBigPhoto = function (target) {
+    var currentPhotoNumber = Number(/\d+(?=\.)/.exec(target.src)[0]);
+    bidPhotoCompilation(currentPhotoNumber);
     document.addEventListener('keydown', onBigPhotoEscPress);
   };
   var closeBigPhoto = function () {
@@ -68,23 +65,26 @@
       socialComments[socialComments.length - 1].remove();
     }
   };
-  // хотела сделать открытие по ENTer, еще не поняла раотает ли или нет
-  for (var l = 0; l < photosArray.length; l++) {
-    photosArray[l].addEventListener('keydown', function (evt) {
-      if (evt.key === 'Enter') {
-        openBigPhoto(evt);
+  // обработчик клика по фотке, делает вывод большого изображения
+  for (var image = 0; image < picturesImages.length; image++) {
+    picturesImages[image].addEventListener('click', function (evt) {
+      evt.preventDefault();
+      var target = evt.target;
+      switch (target.tagName) {
+        case 'A':
+          target = evt.target.querySelector('.picture__img');
+          break;
+        case 'P':
+          target = evt.target.parentElement.querySelector('.picture__img');
+          break;
+        case 'SPAN':
+          target = evt.target.parentElement.parentElement.querySelector('.picture__img');
+          break;
       }
+      openBigPhoto(target);
     });
   }
-
-  // обработчик клика по фотке, делает вывод большого изображения
-  picturesWindow.addEventListener('click', function (evt) {
-    openBigPhoto(evt);
-
-  });
-
   canselBigPhoto.addEventListener('click', function () {
     closeBigPhoto();
   });
-
 }());
