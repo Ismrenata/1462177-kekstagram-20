@@ -61,18 +61,20 @@
   }
   picturesWindow.appendChild(fragment);
 
-
+  // для всех элементов  вывод большого изображения
   // объявление элементов в js
   var bigWindow = document.querySelector('.big-picture');
   var socialCommentTemplateContent = document.querySelector('#social__comment_template').content;
   var socialCommentTemplate = socialCommentTemplateContent.querySelector('.social__comment');
   var similarListElement = bigWindow.querySelector('.social__comments');
+
   var socialCommentCount = bigWindow.querySelector('.social__comment-count');
   var commentsLoader = bigWindow.querySelector('.comments-loader');
-  // var photosArray = picturesWindow.querySelectorAll('.picture__img');
+  var photosArray = picturesWindow.querySelectorAll('.picture__img');
   var canselBigPhoto = bigWindow.querySelector('.big-picture__cancel');
+  var commentWriteField = bigWindow.querySelector('.social__footer-text');
 
-  // для всех элементов  вывод большого изображения
+
   var getSosialComment = function (commentNumber, currentPhotoNumber) {
     var socialCommentListElement = socialCommentTemplate.cloneNode(true);
     socialCommentListElement.querySelector('.social__picture').src = arrow[currentPhotoNumber].comments[commentNumber].avatar;
@@ -87,10 +89,11 @@
       fragmentCommentBigPhoto.appendChild(getSosialComment(commentNumber, currentPhotoNumber));
     }
     similarListElement.appendChild(fragmentCommentBigPhoto);
+
   };
 
   var onBigPhotoEscPress = function (evt) {
-    if (evt.key === 'Escape') {
+    if (evt.key === 'Escape' && evt.target !== commentWriteField) {
       evt.preventDefault();
       closeBigPhoto();
     }
@@ -104,34 +107,43 @@
     socialCommentCount.classList.add('hidden');
     commentsLoader.classList.add('hidden');
     bigWindow.classList.remove('hidden');
-    document.addEventListener('keydown', onBigPhotoEscPress);
+
     commentFragmentCreation(currentPhotoNumber);
   };
   // заполнение списка комментариев
-
+  var openBigPhoto = function (evt) {
+    var currentPhotoNumber = Number(/\d+(?=\.)/.exec(evt.target.src)[0]);
+    bidPhotoCompilation(evt, currentPhotoNumber);
+    document.addEventListener('keydown', onBigPhotoEscPress);
+  };
   var closeBigPhoto = function () {
     bigWindow.classList.add('hidden');
     document.removeEventListener('keydown', onBigPhotoEscPress);
-
+    // удаление списка комментариев при закрытии фото
+    var socialComments = similarListElement.children;
+    while (socialComments.length !== 0) {
+      socialComments[socialComments.length - 1].remove();
+    }
   };
+  // хотела сделать открытие по ENTer, еще не поняла раотает ли или нет
+  for (var l = 0; l < photosArray.length; l++) {
+    photosArray[l].addEventListener('keydown', function (evt) {
+      if (evt.key === 'Enter') {
+        openBigPhoto(evt);
+      }
+    });
+  }
 
-  // хотела сделать открытие по ENTer, что-то табуляция не работает
-  // for (var l = 0; l < photosArray.length; l++) {
-  //   photosArray[l].addEventListener('keydown', function (evt) {
-  //     if (evt.key === 'Enter') {
-  //       openBigPhoto(evt);
-  //     }
-  //   });
-  // };
   // обработчик клика по фотке, делает вывод большого изображения
   picturesWindow.addEventListener('click', function (evt) {
-    var currentPhotoNumber = Number(/\d+(?=\.)/.exec(evt.target.src)[0]);
-    bidPhotoCompilation(evt, currentPhotoNumber);
+    openBigPhoto(evt);
+
   });
 
   canselBigPhoto.addEventListener('click', function () {
     closeBigPhoto();
   });
+
 
   // дом задание лекция 4
   var body = document.querySelector('body');
