@@ -4,7 +4,8 @@
   var fieldsetHashtag = picturesWindow.querySelector('.img-upload__text');
   var textHashtag = fieldsetHashtag.querySelector('.text__hashtags');
   var reg = new RegExp('^#[a-zA-Z0-9_]{1,20}$');
-  // неправильно немного сделала
+  var uploadSubmit = picturesWindow.querySelector('.img-upload__submit'); // кнопка отправки формы
+  // неправильно немного сделала надо там нужно перезатирать на пустое поле setCustomValidity('') --- позже сделаю
   window.hashValidation = {
     isHashIncorrect: function () {
       var hashtagLine = textHashtag.value ? textHashtag.value : false;
@@ -45,4 +46,7 @@
       }
     }
   };
+  uploadSubmit.addEventListener('click', function (evt) {
+    window.hashValidation.isHashIncorrect(evt);
+  });
 }());

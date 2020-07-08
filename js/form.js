@@ -1,13 +1,17 @@
 'use strict';
 (function () {
-  // форма редактирования изображения
-  var picturesWindow = document.querySelector('.pictures');
-  var fieldsetEffectLevel = picturesWindow.querySelector('.img-upload__effect-level');
-  // var effectLevelSlider = fieldsetEffectLevel.querySelector('.effect-level__pin'); // ползунок
-  // var effectLevelLine = fieldsetEffectLevel.querySelector('.effect-level__depth');
-  var effectLevelInput = fieldsetEffectLevel.querySelector('.effect-level__value');
+  // форма открытия и редактирования изображения
 
-  var image = document.querySelector('.img-upload__preview');
+  var picturesWindow = document.querySelector('.pictures');
+
+  var fieldsetFilterList = picturesWindow.querySelector('.img-upload__effects');
+  var fieldsetEffectLevel = picturesWindow.querySelector('.img-upload__effect-level');
+  var grayLineEffect = fieldsetEffectLevel.querySelector('.effect-level__line'); // серая линия
+  var effectLevelSlider = grayLineEffect.querySelector('.effect-level__pin'); // ползунок
+  var effectLevelLine = grayLineEffect.querySelector('.effect-level__depth'); // живая изменяющаяся линия
+  var effectLevelInput = fieldsetEffectLevel.querySelector('.effect-level__value'); // значение самого эффекта
+  var image = document.querySelector('.img-upload__preview'); // изображение кота
+
   var effecs = {
     chrome: {
       filter: 'grayscale(1)',
@@ -35,47 +39,94 @@
       effect: 'brightness'
     }
   };
-  // var NULL_POSITION = 488;
-  // var NULL_WIDTH = 20;
+
   var chosenEffect = 'none';
+
   window.form = {
     ifOriginalEffect: function () {
       if (chosenEffect === 'none') {
         image.style.filter = '';
         fieldsetEffectLevel.classList.add('visually-hidden');
       }
-    },
-    computePosition: function () {
-      var levelPosition = effecs[chosenEffect].meaning / 100 * effectLevelInput.value;
-      image.style = 'color: red';
-      if ((chosenEffect === 'marvin') || (chosenEffect === 'phobos')) {
-        if (chosenEffect === 'marvin') {
-          image.style = 'filter: ' + effecs[chosenEffect].effect + '(' + levelPosition + '%' + ')';
-        }
-        if (chosenEffect === 'phobos') {
-          image.style = 'filter: ' + effecs[chosenEffect].effect + '(' + levelPosition + 'px' + ')';
-        }
-      } else {
-        image.style = 'filter: ' + effecs[chosenEffect].effect + '(' + levelPosition + ')';
-      }
-    },
-    updateSliderPosition: function (evt) {
-      chosenEffect = evt.target.value;
-
-      if (chosenEffect === 'none') {
-        image.style.filter = '';
-        fieldsetEffectLevel.classList.add('visually-hidden');
-      } else {
-        fieldsetEffectLevel.classList.remove('visually-hidden');
-        image.style = 'filter: ' + effecs[chosenEffect].filter;
-      }
     }
-  // var newWidth = e.clientX * NULL_WIDTH / NULL_POSITION;
-  //   effectLevelSlider.style.left = newWidth + '%';
-  //   effectLevelLine.style.width = newWidth + '%';
-  //   effectLevelInput.value = newWidth;
-  // координата по х отпускания мыши
   };
 
+  var updateSliderPosition = function (evt) {
+    chosenEffect = evt.target.value;
+
+    if (chosenEffect === 'none') {
+      image.style.filter = '';
+      fieldsetEffectLevel.classList.add('visually-hidden');
+    } else {
+      fieldsetEffectLevel.classList.remove('visually-hidden');
+      image.style = 'filter: ' + effecs[chosenEffect].filter;
+      effectLevelSlider.style.left = '100%';
+      effectLevelInput.value = 100;
+      effectLevelLine.style.width = '100%';
+    }
+  };
+
+  var computePosition = function (effectLevelInputValue) {
+    var levelPosition = effecs[chosenEffect].meaning / 100 * effectLevelInputValue;
+    image.style = 'color: red';
+    if ((chosenEffect === 'marvin') || (chosenEffect === 'phobos')) {
+      if (chosenEffect === 'marvin') {
+        image.style = 'filter: ' + effecs[chosenEffect].effect + '(' + levelPosition + '%' + ')';
+      }
+      if (chosenEffect === 'phobos') {
+        image.style = 'filter: ' + effecs[chosenEffect].effect + '(' + levelPosition + 'px' + ')';
+      }
+    } else {
+      image.style = 'filter: ' + effecs[chosenEffect].effect + '(' + levelPosition + ')';
+    }
+  };
+  // обработчик на радиокнопки (при изменении состояния возращает начальное положение )
+  fieldsetFilterList.addEventListener('change', function (evt) {
+    updateSliderPosition(evt);
+  });
+  // Внизу код для движения пина и изменения эффекта
+  effectLevelSlider.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+    var onePersent = grayLineEffect.getBoundingClientRect().width / 100; // 1 % ширины в пикселях
+    var startCoords = {
+      x: evt.clientX,
+      xLineValue: effectLevelInput.value // значение поля эффекта просто в цифрах, начальное 100 стоит
+    };
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        xLineValue: (startCoords.x - moveEvt.clientX) / onePersent
+      };
+      if (((startCoords.xLineValue >= 0) && (startCoords.xLineValue <= 100)) || ((startCoords.xLineValue > 100) && (shift.x > 0)) || ((startCoords.xLineValue < 0) && (shift.x < 0))) {
+        effectLevelSlider.style.left = (effectLevelSlider.offsetLeft - shift.x) + 'px';
+        effectLevelInput.value = effectLevelInput.value - shift.xLineValue;
+        effectLevelLine.style.width = effectLevelInput.value + '%';
+        computePosition(effectLevelInput.value);
+        startCoords = {
+          x: moveEvt.clientX,
+          xLineValue: effectLevelInput.value
+        };
+      }
+      if (startCoords.xLineValue < 0) {
+        effectLevelSlider.style.left = '0%';
+        effectLevelInput.value = 0;
+        effectLevelLine.style.width = '0%';
+      }
+      if (startCoords.xLineValue > 100) {
+        effectLevelSlider.style.left = '100%';
+        effectLevelInput.value = 100;
+        effectLevelLine.style.width = '100%';
+      }
+    };
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
 
 }());

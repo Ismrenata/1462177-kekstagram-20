@@ -55,9 +55,12 @@
 
   // заполнение списка комментариев
   var openBigPhoto = function (evt) {
-    var currentPhotoNumber = Number(/\d+(?=\.)/.exec(evt.target.src)[0]);
-    bidPhotoCompilation(evt, currentPhotoNumber);
-    document.addEventListener('keydown', onBigPhotoEscPress);
+    if (evt.target.src) {
+      var currentPhotoNumber = Number(/\d+(?=\.)/.exec(evt.target.src)[0]);
+      bidPhotoCompilation(evt, currentPhotoNumber);
+      document.addEventListener('keydown', onBigPhotoEscPress);
+    }
+
   };
   var closeBigPhoto = function () {
     bigWindow.classList.add('hidden');
