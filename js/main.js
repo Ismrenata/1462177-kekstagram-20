@@ -1,7 +1,7 @@
 'use strict';
 (function () {
   // var onError = function (message) {
-  //   console.error(message);
+  //   console.log(message));
   // };
 
   // var onSuccess = function (data) {
@@ -11,4 +11,4 @@
     window.picture(data);
     window.preview(data);
   }, function () {});
-}());
+})();
