@@ -30,8 +30,4 @@
   //   fragment.appendChild(getPhotos(i));
   // }
   // picturesWindow.appendChild(fragment);
-  // пока не знаю зачем в глобольную область picturesWindow
-  // window.picture = {
-  //   pictureWindowFull: picturesWindow
-  // };
 }());
