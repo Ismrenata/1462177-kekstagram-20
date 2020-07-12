@@ -16,6 +16,7 @@
   };
 
   window.picture = function (data) {
+    // var dataCopy = data;
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < data.length; i++) {

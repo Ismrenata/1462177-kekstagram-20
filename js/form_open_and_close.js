@@ -76,11 +76,12 @@
   uploadSubmit.addEventListener('click', function (evt) {
     window.hashValidation.isHashIncorrect(evt);
     if (window.hashValidation.isHashIncorrect(evt)) {
-      window.upload(new FormData(form), function (response) {
+      window.upload(new FormData(form), function () {
         onSuccessSubmit();
       }, function () {});
     } else {
-      console.log('где-то ошибочка');
+      // onErrorSubmit();
+      // console.log('где-то ошибочка');
     }
 
     evt.preventDefault();
