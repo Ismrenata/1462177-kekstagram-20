@@ -6,6 +6,7 @@
 
   var fieldsetFilterList = picturesWindow.querySelector('.img-upload__effects');
   var fieldsetEffectLevel = picturesWindow.querySelector('.img-upload__effect-level');
+  var effects = fieldsetFilterList.querySelectorAll('.effects__radio');
   var grayLineEffect = fieldsetEffectLevel.querySelector('.effect-level__line'); // серая линия
   var effectLevelSlider = grayLineEffect.querySelector('.effect-level__pin'); // ползунок
   var effectLevelLine = grayLineEffect.querySelector('.effect-level__depth'); // живая изменяющаяся линия
@@ -48,6 +49,13 @@
         image.style.filter = '';
         fieldsetEffectLevel.classList.add('visually-hidden');
       }
+    },
+    ifFormSubmit: function () {
+      chosenEffect = 'none';
+      image.style = '';
+      fieldsetEffectLevel.classList.add('visually-hidden');
+      effects[0].setAttribute('checked', 'checked');
+      // нужно чтобы стоял оригинал а не эффект из предыдущей сессии, сделать пока не получается
     }
   };
 

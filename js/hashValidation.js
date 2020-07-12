@@ -3,9 +3,11 @@
   var picturesWindow = document.querySelector('.pictures');
   var fieldsetHashtag = picturesWindow.querySelector('.img-upload__text');
   var textHashtag = fieldsetHashtag.querySelector('.text__hashtags');
+  var commentField = fieldsetHashtag.querySelector('.text__description');
 
   var isHashIncorrect = function () {
     var reg = new RegExp('^#[a-zA-Z0-9_]{1,20}$');
+    var isHashcorrect = true;
     var hashtagLine = textHashtag.value ? textHashtag.value : false;
     if (hashtagLine) {
       var hashtagArr = hashtagLine.toLowerCase().split(' ');
@@ -40,13 +42,21 @@
       }
       if (mistakes.length) {
         textHashtag.setCustomValidity(mistakes);
+        isHashcorrect = false;
       } else {
         textHashtag.setCustomValidity('');
+        isHashcorrect = true;
       }
     }
+    return isHashcorrect;
+  };
+  var ifFormSubmit = function () {
+    textHashtag.value = '';
+    commentField.value = '';
   };
   window.hashValidation = {
-    isHashIncorrect: isHashIncorrect
+    isHashIncorrect: isHashIncorrect,
+    ifFormSubmit: ifFormSubmit
   };
 }());
 
