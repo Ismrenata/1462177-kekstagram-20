@@ -14,37 +14,38 @@
   var canselBigPhoto = bigWindow.querySelector('.big-picture__cancel'); // кнопка закрытия крестик
   var commentWriteField = bigWindow.querySelector('.social__footer-text'); // поле ввода коммента используется в esc
 
-  var arrow = window.data.arrowData;
+  // var arrow = window.data.arrowData;
 
 
-  var getSosialComment = function (commentNumber, currentPhotoNumber) {
+  var getSosialComment = function (commentNumber, arr) {
     var socialCommentListElement = socialCommentTemplate.cloneNode(true);
-    socialCommentListElement.querySelector('.social__picture').src = arrow[currentPhotoNumber].comments[commentNumber].avatar;
-    socialCommentListElement.querySelector('.social__picture').alt = arrow[currentPhotoNumber].comments[commentNumber].name;
-    socialCommentListElement.querySelector('.social__text').textContent = arrow[currentPhotoNumber].comments[commentNumber].message;
+    socialCommentListElement.querySelector('.social__picture').src = arr.comments[commentNumber].avatar;
+    socialCommentListElement.querySelector('.social__picture').alt = arr.comments[commentNumber].name;
+    socialCommentListElement.querySelector('.social__text').textContent = arr.comments[commentNumber].message;
     return socialCommentListElement;
   };
+
   // создание фрагмента списка комментов к фотке и добавление его к нужному элементу окна
-  var commentFragmentCreation = function (currentPhotoNumber) {
+  var commentFragmentCreation = function (arr) {
     var fragmentCommentBigPhoto = document.createDocumentFragment();
-    for (var commentNumber = 0; commentNumber < arrow[currentPhotoNumber].comments.length; commentNumber++) {
-      fragmentCommentBigPhoto.appendChild(getSosialComment(commentNumber, currentPhotoNumber));
+    for (var commentNumber = 0; commentNumber < arr.comments.length; commentNumber++) {
+      fragmentCommentBigPhoto.appendChild(getSosialComment(commentNumber, arr));
     }
     similarListElement.appendChild(fragmentCommentBigPhoto);
 
   };
 
   // функция заполняет информацией изображения: адрес, лайки комменты, описание в большое окно
-  var bidPhotoCompilation = function (evt, currentPhotoNumber) {
-    bigWindow.querySelector('.big-picture__img img').src = arrow[currentPhotoNumber].url;
-    bigWindow.querySelector('.likes-count').textContent = arrow[currentPhotoNumber].likes;
-    bigWindow.querySelector('.comments-count').textContent = arrow[currentPhotoNumber].comments.length;
-    bigWindow.querySelector('.social__caption').textContent = arrow[currentPhotoNumber].description;
+  var bidPhotoCompilation = function (evt, arr) {
+    bigWindow.querySelector('.big-picture__img img').src = arr.url;
+    bigWindow.querySelector('.likes-count').textContent = arr.likes;
+    bigWindow.querySelector('.comments-count').textContent = arr.comments.length;
+    bigWindow.querySelector('.social__caption').textContent = arr.description;
     socialCommentCount.classList.add('hidden');
     commentsLoader.classList.add('hidden');
     bigWindow.classList.remove('hidden');
 
-    commentFragmentCreation(currentPhotoNumber);
+    commentFragmentCreation(arr);
   };
   var onBigPhotoEscPress = function (evt) {
     if (evt.key === 'Escape' && evt.target !== commentWriteField) {
@@ -54,11 +55,12 @@
   };
 
   // заполнение списка комментариев
-  var openBigPhoto = function (evt) {
+  var openBigPhoto = function (evt, arr) {
     if (evt.target.src) {
       var currentPhotoNumber = Number(/\d+(?=\.)/.exec(evt.target.src)[0]);
-      bidPhotoCompilation(evt, currentPhotoNumber);
+      bidPhotoCompilation(evt, arr[currentPhotoNumber - 1]);
       document.addEventListener('keydown', onBigPhotoEscPress);
+      // console.log(data[currentPhotoNumber - 1]);
     }
 
   };
@@ -71,21 +73,19 @@
       socialComments[socialComments.length - 1].remove();
     }
   };
-  // хотела сделать открытие по ENTer, еще не поняла раотает ли или нет
-  for (var l = 0; l < photosArray.length; l++) {
-    photosArray[l].addEventListener('keydown', function (evt) {
-      if (evt.key === 'Enter') {
-        openBigPhoto(evt);
-      }
+  window.preview = function (data) {
+    picturesWindow.addEventListener('click', function (evt) {
+      openBigPhoto(evt, data);
     });
-  }
-
+    for (var l = 0; l < photosArray.length; l++) {
+      photosArray[l].addEventListener('keydown', function (evt) {
+        if (evt.key === 'Enter') {
+          openBigPhoto(evt, data);
+        }
+      });
+    }
+  };
   // обработчик клика по фотке, делает вывод большого изображения
-  picturesWindow.addEventListener('click', function (evt) {
-    openBigPhoto(evt);
-
-  });
-
   canselBigPhoto.addEventListener('click', function () {
     closeBigPhoto();
   });
