@@ -1,6 +1,7 @@
 'use strict';
 (function () {
-// отрисовка миниатюры фоток с количеством лайков и комментов
+// отрисовка миниатюры фоток с количеством лайков и комментов на главной
+// основаная функция получает на вход данные либо моковые( в комменты поместила) либо реальные
   var picturesTemplate = document.querySelector('#picture')
 .content
 .querySelector('.picture');
@@ -16,7 +17,7 @@
   };
 
   window.picture = function (data) {
-    // var dataCopy = data;
+    window.data.real = data;
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < data.length; i++) {
