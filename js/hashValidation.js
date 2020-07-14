@@ -5,10 +5,11 @@
   var textHashtag = fieldsetHashtag.querySelector('.text__hashtags');
   var commentField = fieldsetHashtag.querySelector('.text__description');
 
+
   var isHashIncorrect = function () {
     var reg = new RegExp('^#[a-zA-Z0-9_]{1,20}$');
-    var isHashcorrect = true;
     var hashtagLine = textHashtag.value ? textHashtag.value : false;
+    var isHashcorrect = true;
     if (hashtagLine) {
       var hashtagArr = hashtagLine.toLowerCase().split(' ');
       var listOfErrors = {
@@ -50,6 +51,7 @@
     }
     return isHashcorrect;
   };
+
   var ifFormSubmit = function () {
     textHashtag.value = '';
     commentField.value = '';
