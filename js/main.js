@@ -12,5 +12,5 @@
     window.picture(data);
     // imgFilter.classList.remove('img-filters--inactive');
     window.preview(data);
-  }, function () {});
+  }, function (r) {});
 })();
