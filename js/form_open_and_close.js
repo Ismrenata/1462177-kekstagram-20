@@ -1,19 +1,17 @@
 'use strict';
 (function () {
   var picturesWindow = document.querySelector('.pictures');
-
   var body = document.querySelector('body');
   var uploadField = picturesWindow.querySelector('#upload-file'); // поле выбора файла
   var uploadCansel = picturesWindow.querySelector('#upload-cancel');
   var editForm = picturesWindow.querySelector('.img-upload__overlay');
-  var uploadSubmit = picturesWindow.querySelector('.img-upload__submit'); // кнопка отправки формы
-
   var onPopupEscPress = function (evt) {
     if (evt.key === 'Escape') {
       evt.preventDefault();
       closePopup();
     }
   };
+
   var openPopup = function () {
     body.classList.add('modal-open');
     document.addEventListener('keydown', onPopupEscPress);
@@ -40,9 +38,6 @@
   uploadField.addEventListener('change', function () {
     openPopup();
     editForm.classList.remove('hidden');
-  });
-  uploadSubmit.addEventListener('click', function (evt) {
-    window.hashValidation.isHashIncorrect(evt);
   });
 
 }());

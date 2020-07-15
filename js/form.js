@@ -6,6 +6,7 @@
 
   var fieldsetFilterList = picturesWindow.querySelector('.img-upload__effects');
   var fieldsetEffectLevel = picturesWindow.querySelector('.img-upload__effect-level');
+
   var grayLineEffect = fieldsetEffectLevel.querySelector('.effect-level__line'); // серая линия
   var effectLevelSlider = grayLineEffect.querySelector('.effect-level__pin'); // ползунок
   var effectLevelLine = grayLineEffect.querySelector('.effect-level__depth'); // живая изменяющаяся линия
@@ -48,6 +49,11 @@
         image.style.filter = '';
         fieldsetEffectLevel.classList.add('visually-hidden');
       }
+    },
+    ifFormSubmit: function () {
+      image.style = '';
+      fieldsetEffectLevel.classList.add('visually-hidden');
+      fieldsetFilterList.querySelector('#effect-none').checked = true;
     }
   };
 
