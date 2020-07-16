@@ -41,6 +41,6 @@
   };
 
   window.data = {
-    arrowData: objectGeneration()
+    arrowData: objectGeneration() // для генерации моковых данных, для реальных перезаписываем window.data
   };
 }());

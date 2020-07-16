@@ -9,7 +9,7 @@
   var isHashIncorrect = function () {
     var reg = new RegExp('^#[a-zA-Z0-9_]{1,20}$');
     var hashtagLine = textHashtag.value ? textHashtag.value : false;
-    var isHashcorrect = true;
+    var isHashСorrect = true;
     if (hashtagLine) {
       var hashtagArr = hashtagLine.toLowerCase().split(' ');
       var listOfErrors = {
@@ -43,13 +43,13 @@
       }
       if (mistakes.length) {
         textHashtag.setCustomValidity(mistakes);
-        isHashcorrect = false;
+        isHashСorrect = false;
       } else {
         textHashtag.setCustomValidity('');
-        isHashcorrect = true;
+        isHashСorrect = true;
       }
     }
-    return isHashcorrect;
+    return isHashСorrect;
   };
 
   var ifFormSubmit = function () {
