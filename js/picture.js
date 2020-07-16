@@ -19,7 +19,7 @@
     photoElement.querySelector('.picture__comments').textContent = arr.comments.length;
     return photoElement;
   }
-
+  // рендеринг по дефолту
   function defaultRendering(data) {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < data.length; i++) {
@@ -45,9 +45,10 @@
   }
 
   function getRank(arr) {
-    return arr.comments.length;
+    return arr.comments.length; // функция рентинга - числа комментов
   }
 
+  // функции внизу генерируют нужных массив объектов для каждой кнопки
   function ratingCommentFilter() {
     var popularElements = window.data.slice().sort(function (left, right) {
       var rankDiff = getRank(right) - getRank(left);
@@ -64,13 +65,13 @@
     while (arr.length < max) {
       rundomnumber = Math.floor(Math.random() * window.data.length); // создадим случайное число
       if (arr.indexOf(rundomnumber) === -1) { // проверим есть оно  у нас или нет
-        arr.push(rundomnumber); // записываем в массив т.к нету
+        arr.push(rundomnumber); // записываем в массив если нет
       }
     }
     for (var i = 0; i < arr.length; i++) {
-      arr[i] = window.data[arr[i]];
+      arr[i] = window.data[arr[i]]; // создаем свой массив изобъектов для рендеринга
     }
-    // код ниже позволяет частично перерендаривать после клика
+    // код ниже позволяет частично перерендаривать после клика (НЕ БУДУ УДАЛЯТЬ ПОКА)
     // if (defaultButton.classList.contains('img-filters__button--active')) {
     //   for (i = 0; i < window.data.length; i++) {
     //     if (!arr.includes(window.data[i])) {
@@ -86,7 +87,7 @@
     return arr;
   }
 
-  function filterFunction(butt1, butt2, buttoncurrent) {
+  function filterFunction(one, two, buttoncurrent) {
     if (!buttoncurrent.classList.contains('img-filters__button--active')) {
       var picturesElements = picturesWindow.querySelectorAll('.picture');
       for (var i = 0; i < picturesElements.length; i++) {
@@ -106,26 +107,32 @@
         default:
           break;
       }
-      defaultRendering(arrow);
-      removeClassButton(butt1);
-      removeClassButton(butt2);
-      toggleClassButton(buttoncurrent);
+      defaultRendering(arrow); // рендеринг нужного массива
+      removeClassButton(one);
+      removeClassButton(two);
+      toggleClassButton(buttoncurrent); // переключение класса у кнопки клика
     }
   }
-  function button1() {
+
+  // функции рендеринга для колбеков в функции дребезга
+  function buttonDefaultRendering() {
     filterFunction(randomButton, ratingCommentButton, defaultButton);
   }
-  function button2() {
+  function buttonRandomRendering() {
     filterFunction(defaultButton, ratingCommentButton, randomButton);
   }
-  function button3() {
+  function buttonRatingRendering() {
     filterFunction(defaultButton, randomButton, ratingCommentButton);
   }
-  var onRandomClick = window.debounce(button2);
-  var onRatingCommentClick = window.debounce(button3);
-  var onDefaultClick = window.debounce(button1);
-  randomButton.addEventListener('click', onRandomClick);
+
+  // колбеки для функции вывода дребезга
+  var onDefaultClick = window.debounce(buttonDefaultRendering);
+  var onRandomClick = window.debounce(buttonRandomRendering);
+  var onRatingCommentClick = window.debounce(buttonRatingRendering);
+
+  // обработчки на кнопки клика
   defaultButton.addEventListener('click', onDefaultClick);
+  randomButton.addEventListener('click', onRandomClick);
   ratingCommentButton.addEventListener('click', onRatingCommentClick);
 }());
 

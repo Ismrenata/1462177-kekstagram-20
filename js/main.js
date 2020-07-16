@@ -10,7 +10,6 @@
   // };
   window.load('https://javascript.pages.academy/kekstagram/data', function (data) {
     window.picture(data);
-    // imgFilter.classList.remove('img-filters--inactive');
     window.preview(data);
   }, function () {});
 })();
