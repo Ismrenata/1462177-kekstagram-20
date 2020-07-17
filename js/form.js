@@ -129,6 +129,7 @@
       upEvt.preventDefault();
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
+      effectLevelInput.value = Math.floor(effectLevelInput.value);
     };
 
     document.addEventListener('mousemove', onMouseMove);

@@ -17,22 +17,50 @@
   // var arrow = window.data.arrowData;
 
 
-  var getSosialComment = function (commentNumber, arr) {
+  var getSosialComment = function (commentnumber, arr) {
     var socialCommentListElement = socialCommentTemplate.cloneNode(true);
-    socialCommentListElement.querySelector('.social__picture').src = arr.comments[commentNumber].avatar;
-    socialCommentListElement.querySelector('.social__picture').alt = arr.comments[commentNumber].name;
-    socialCommentListElement.querySelector('.social__text').textContent = arr.comments[commentNumber].message;
+    socialCommentListElement.querySelector('.social__picture').src = arr.comments[commentnumber].avatar;
+    socialCommentListElement.querySelector('.social__picture').alt = arr.comments[commentnumber].name;
+    socialCommentListElement.querySelector('.social__text').textContent = arr.comments[commentnumber].message;
     return socialCommentListElement;
   };
 
-  // создание фрагмента списка комментов к фотке и добавление его к нужному элементу окна
-  var commentFragmentCreation = function (arr) {
+  function commentsRendering(min, max, arr) {
     var fragmentCommentBigPhoto = document.createDocumentFragment();
-    for (var commentNumber = 0; commentNumber < arr.comments.length; commentNumber++) {
+    var commentNumber = Number(min);
+    while (commentNumber < Number(max)) {
       fragmentCommentBigPhoto.appendChild(getSosialComment(commentNumber, arr));
+      commentNumber++;
     }
     similarListElement.appendChild(fragmentCommentBigPhoto);
-
+  }
+  // функция загрузки комментов, т к это коллбек то не принимает инфу о номере текущей фотки, не смогла просто передать ей текущий элемент arr как в остальных функциях
+  // приходится импровизировать,! если скажешь как сделать более удобно буду рада
+  function onClickLoader() {
+    var arrNumber = Number(/\d+(?=\.)/.exec(bigWindow.querySelector('.big-picture__img img').src));// номер нужного элемента в массиве data
+    var arr = window.data[arrNumber - 1].comments;// текущий список комментов весь
+    var arrCommentAmount = arr.length; // полное количество комментов
+    var alreadyRenderComments = similarListElement.querySelectorAll('.social__comment').length; // количество уже выведенных комментов
+    var min = alreadyRenderComments;
+    var max;
+    if (arrCommentAmount - alreadyRenderComments < 5) {
+      // console.log('коммитов осталось меньше пяти');
+      max = arrCommentAmount;
+    } else {
+      // console.log('коммитов осталось больше либо равно пяти');
+      max = alreadyRenderComments + 5;
+    }
+    commentsRendering(min, max, arr);
+  }
+  // создание фрагмента списка комментов к фотке и добавление его к нужному элементу окна
+  var commentFragmentCreation = function (arr) {
+    if (arr.comments.length < 5) {
+      commentsRendering(0, arr.comments.length, arr);
+    } else { // если комментов больше пяти
+      commentsLoader.classList.remove('hidden');// показываем кнопку загрузить еще
+      commentsRendering(0, 5, arr); // загружаем лишь пять первых комментов
+      commentsLoader.addEventListener('click', onClickLoader); // по клику должны открыться по 5 комментов
+    }
   };
 
   // функция заполняет информацией изображения: адрес, лайки комменты, описание в большое окно
@@ -44,7 +72,6 @@
     socialCommentCount.classList.add('hidden');
     commentsLoader.classList.add('hidden');
     bigWindow.classList.remove('hidden');
-
     commentFragmentCreation(arr);
   };
   var onBigPhotoEscPress = function (evt) {
@@ -69,6 +96,10 @@
     document.removeEventListener('keydown', onBigPhotoEscPress);
     // удаление списка комментариев при закрытии фото
     var socialComments = similarListElement.children;
+    // для комментов с кнопкой загрузки удаляем обработчик на кнопку
+    if (socialComments.length > 5) {
+      commentsLoader.removeEventListener('click', onClickLoader);
+    }
     while (socialComments.length !== 0) {
       socialComments[socialComments.length - 1].remove();
     }

@@ -67,9 +67,13 @@
     uploadField.value = ''; // сброс значения поля выбора
   };
 
-  // здесь не понимаю !!!, как добавить обработчик submit, ведь там в разметке тоже дан адрес отправки и два процесса конфликтуют
-  uploadSubmit.addEventListener('click', function (evt) {
+  // проверь пожалуйста? все правильно?
+  uploadSubmit.addEventListener('click', function () {
     window.hashValidation.isHashIncorrect();
+  });
+
+  form.addEventListener('submit', function (evt) {
+    // window.hashValidation.isHashIncorrect();
     if (window.hashValidation.isHashIncorrect()) {
       window.upload(new FormData(form), function () {
         onSuccessSubmit('success');
@@ -80,9 +84,5 @@
     }
 
   });
-
-  // uploadSubmit.addEventListener('submit', function (e) {
-  //   e.preventDefault();
-  // });
 
 }());
