@@ -27,8 +27,8 @@
 
   function commentsRendering(min, max, arr) {
     var fragmentCommentBigPhoto = document.createDocumentFragment();
-    var commentNumber = Number(min);
-    while (commentNumber < Number(max)) {
+    var commentNumber = min;
+    while (commentNumber < max) {
       fragmentCommentBigPhoto.appendChild(getSosialComment(commentNumber, arr));
       commentNumber++;
     }
@@ -38,14 +38,15 @@
   // приходится импровизировать,! если скажешь как сделать более удобно буду рада
   function onClickLoader() {
     var arrNumber = Number(/\d+(?=\.)/.exec(bigWindow.querySelector('.big-picture__img img').src));// номер нужного элемента в массиве data
-    var arr = window.data[arrNumber - 1].comments;// текущий список комментов весь
-    var arrCommentAmount = arr.length; // полное количество комментов
+    var arr = window.data[arrNumber - 1];// текущий элемент фото
+    var arrCommentAmount = arr.comments.length; // полное количество комментов
     var alreadyRenderComments = similarListElement.querySelectorAll('.social__comment').length; // количество уже выведенных комментов
     var min = alreadyRenderComments;
     var max;
     if (arrCommentAmount - alreadyRenderComments < 5) {
       // console.log('коммитов осталось меньше пяти');
       max = arrCommentAmount;
+      commentsLoader.classList.add('hidden');
     } else {
       // console.log('коммитов осталось больше либо равно пяти');
       max = alreadyRenderComments + 5;
