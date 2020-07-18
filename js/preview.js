@@ -10,7 +10,6 @@
 
   var socialCommentCount = bigWindow.querySelector('.social__comment-count'); // используется, чтобы добавить класс hidden
   var commentsLoader = bigWindow.querySelector('.comments-loader'); // используется, чтобы добавить класс hidden
-  var photosArray = picturesWindow.querySelectorAll('.picture__img'); // для открытия по enter с клавиатуры
   var canselBigPhoto = bigWindow.querySelector('.big-picture__cancel'); // кнопка закрытия крестик
   var commentWriteField = bigWindow.querySelector('.social__footer-text'); // поле ввода коммента используется в esc
 
@@ -65,7 +64,7 @@
   };
 
   // функция заполняет информацией изображения: адрес, лайки комменты, описание в большое окно
-  var bidPhotoCompilation = function (evt, arr) {
+  var bidPhotoCompilation = function (arr) {
     bigWindow.querySelector('.big-picture__img img').src = arr.url;
     bigWindow.querySelector('.likes-count').textContent = arr.likes;
     bigWindow.querySelector('.comments-count').textContent = arr.comments.length;
@@ -81,16 +80,21 @@
       closeBigPhoto();
     }
   };
-
+  var openBigPhotoHelp = function (elementSrc, arr) {
+    var currentPhotoNumber = Number(/\d+(?=\.)/.exec(elementSrc)[0]);
+    bidPhotoCompilation(arr[currentPhotoNumber - 1]);
+    document.addEventListener('keydown', onBigPhotoEscPress);
+  };
   // заполнение списка комментариев
   var openBigPhoto = function (evt, arr) {
     if (evt.target.src) {
-      var currentPhotoNumber = Number(/\d+(?=\.)/.exec(evt.target.src)[0]);
-      bidPhotoCompilation(evt, arr[currentPhotoNumber - 1]);
-      document.addEventListener('keydown', onBigPhotoEscPress);
-      // console.log(data[currentPhotoNumber - 1]);
+      openBigPhotoHelp(evt.target.src, arr);
     }
-
+  };
+  var onEnterOpenBigPhoto = function (evt, arr) {
+    if (evt.target.children[0].src) {
+      openBigPhotoHelp(evt.target.children[0].src, arr);
+    }
   };
   var closeBigPhoto = function () {
     bigWindow.classList.add('hidden');
@@ -109,13 +113,11 @@
     picturesWindow.addEventListener('click', function (evt) {
       openBigPhoto(evt, data);
     });
-    for (var l = 0; l < photosArray.length; l++) {
-      photosArray[l].addEventListener('keydown', function (evt) {
-        if (evt.key === 'Enter') {
-          openBigPhoto(evt, data);
-        }
-      });
-    }
+    document.addEventListener('keydown', function (evt) {
+      if ((evt.key === 'Enter') && (evt.target.classList.contains('picture'))) {
+        onEnterOpenBigPhoto(evt, data);
+      }
+    });
   };
   // обработчик клика по фотке, делает вывод большого изображения
   canselBigPhoto.addEventListener('click', function () {

@@ -5,8 +5,10 @@
   var uploadField = picturesWindow.querySelector('#upload-file'); // поле выбора файла
   var uploadCansel = picturesWindow.querySelector('#upload-cancel');
   var editForm = picturesWindow.querySelector('.img-upload__overlay');
+  var commentField = editForm.querySelector('.text__description');
+
   var onPopupEscPress = function (evt) {
-    if (evt.key === 'Escape') {
+    if ((evt.key === 'Escape') && (evt.target !== commentField)) {
       evt.preventDefault();
       closePopup();
     }
