@@ -5,9 +5,24 @@
   var textHashtag = fieldsetHashtag.querySelector('.text__hashtags');
   var commentField = fieldsetHashtag.querySelector('.text__description');
 
+  var reg2 = new RegExp('^#[a-zA-ZА-Яа-я0-9_]{1,20} ?$');
+  function clearSetCustomValidity() {
+    textHashtag.setCustomValidity('');
+    textHashtag.classList.remove('text__hashtags__warning');
+  }
+  var checkInput = function () {
+    if ((textHashtag.value === '') || (reg2.test(textHashtag.value))) {
+      textHashtag.setCustomValidity('');
+      textHashtag.classList.remove('text__hashtags__warning');
+    } else {
+      setTimeout(clearSetCustomValidity, 15000);
+    }
+  };
+
+  textHashtag.addEventListener('input', checkInput);
 
   var isHashIncorrect = function () {
-    var reg = new RegExp('^#[a-zA-Z0-9_]{1,20}$');
+    var reg = new RegExp('^#[a-zA-ZА-Яа-я0-9_]{1,20}$');
     var hashtagLine = textHashtag.value ? textHashtag.value : false;
     var isHashСorrect = true;
     if (hashtagLine) {
@@ -39,16 +54,19 @@
         mistakes += 'Нельзя использовать более 5ти хештегов!';
       }
       if (listOfErrors.syntaxError) {
-        mistakes += 'Некорректно введен хештег!';
+        mistakes += 'Некорректно введен хештег! или Хештег слишком длинные!';
       }
       if (mistakes.length) {
         textHashtag.setCustomValidity(mistakes);
+        textHashtag.classList.add('text__hashtags__warning');
         isHashСorrect = false;
       } else {
         textHashtag.setCustomValidity('');
+        textHashtag.classList.remove('text__hashtags__warning');
         isHashСorrect = true;
       }
     }
+
     return isHashСorrect;
   };
 

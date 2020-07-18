@@ -22,9 +22,9 @@
   // рендеринг по дефолту
   function defaultRendering(data) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < data.length; i++) {
-      fragment.appendChild(getArr(data[i]));
-    }
+    data.forEach(function (item, i, array) {
+      fragment.appendChild(getArr(array[i]));
+    });
     picturesWindow.appendChild(fragment);
   }
 
@@ -68,31 +68,18 @@
         arr.push(rundomnumber); // записываем в массив если нет
       }
     }
-    for (var i = 0; i < arr.length; i++) {
-      arr[i] = window.data[arr[i]]; // создаем свой массив изобъектов для рендеринга
-    }
-    // код ниже позволяет частично перерендаривать после клика (НЕ БУДУ УДАЛЯТЬ ПОКА)
-    // if (defaultButton.classList.contains('img-filters__button--active')) {
-    //   for (i = 0; i < window.data.length; i++) {
-    //     if (!arr.includes(window.data[i])) {
-    //       picturesWindow.removeChild(picturesElements[i]);
-    //     }
-    //   }
-    // } else {
-    //   for (i = 0; i < picturesElements.length; i++) {
-    //     picturesWindow.removeChild(picturesElements[i]);
-    //   }
-    //   defaultRendering(arr);
-    // }
+    arr.forEach(function (item, i, array) {
+      array[i] = window.data[array[i]];// создаем свой массив изобъектов для рендеринга
+    });
     return arr;
   }
 
   function filterFunction(one, two, buttoncurrent) {
     if (!buttoncurrent.classList.contains('img-filters__button--active')) {
       var picturesElements = picturesWindow.querySelectorAll('.picture');
-      for (var i = 0; i < picturesElements.length; i++) {
-        picturesWindow.removeChild(picturesElements[i]);
-      }
+      picturesElements.forEach(function (item, i, array) {
+        picturesWindow.removeChild(array[i]);
+      });
       var arrow;
       switch (buttoncurrent) {
         case randomButton:

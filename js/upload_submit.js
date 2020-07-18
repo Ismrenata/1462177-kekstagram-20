@@ -70,11 +70,13 @@
   // проверь пожалуйста? все правильно?
   uploadSubmit.addEventListener('click', function () {
     window.hashValidation.isHashIncorrect();
+    window.form.inputValueMathFloor(); // округление значения поля эффекта
   });
 
   form.addEventListener('submit', function (evt) {
     // window.hashValidation.isHashIncorrect();
     if (window.hashValidation.isHashIncorrect()) {
+
       window.upload(new FormData(form), function () {
         onSuccessSubmit('success');
       }, function () {
