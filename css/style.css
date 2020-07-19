@@ -728,7 +728,10 @@ main {
 
   border-radius: 5px;
 }
-
+.text__hashtags__warning {
+  border: 5px solid red;
+  border-radius: 5px;
+}
 .text__description {
   width: 450px;
   height: 100px;

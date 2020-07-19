@@ -11,8 +11,9 @@
   var effectLevelSlider = grayLineEffect.querySelector('.effect-level__pin'); // ползунок
   var effectLevelLine = grayLineEffect.querySelector('.effect-level__depth'); // живая изменяющаяся линия
   var effectLevelInput = fieldsetEffectLevel.querySelector('.effect-level__value'); // значение самого эффекта
-  var image = document.querySelector('.img-upload__preview'); // изображение кота
+  var image = document.querySelector('.img-upload__preview img'); // изображение кота
 
+  var nameEffects = ['none', 'chrome', 'sepia', 'marvin', 'phobos', 'heat'];
   var effecs = {
     chrome: {
       filter: 'grayscale(1)',
@@ -54,18 +55,28 @@
       image.style = '';
       fieldsetEffectLevel.classList.add('visually-hidden');
       fieldsetFilterList.querySelector('#effect-none').checked = true;
+    },
+    inputValueMathFloor: function () {
+      effectLevelInput.value = Math.floor(effectLevelInput.value);
     }
   };
-
+  function changeFilterClass(chosen) {
+    nameEffects.forEach(function (item, i, arr) {
+      if (image.classList.contains('effects__preview--' + arr[i])) {
+        image.classList.remove('effects__preview--' + arr[i]);
+      }
+    });
+    image.classList.add('effects__preview--' + chosen);
+  }
   var updateSliderPosition = function (evt) {
     chosenEffect = evt.target.value;
-
+    changeFilterClass(chosenEffect);
     if (chosenEffect === 'none') {
       image.style.filter = '';
       fieldsetEffectLevel.classList.add('visually-hidden');
     } else {
       fieldsetEffectLevel.classList.remove('visually-hidden');
-      image.style = 'filter: ' + effecs[chosenEffect].filter;
+      image.style.filter = effecs[chosenEffect].filter;
       effectLevelSlider.style.left = '100%';
       effectLevelInput.value = 100;
       effectLevelLine.style.width = '100%';
@@ -74,16 +85,19 @@
 
   var computePosition = function (effectLevelInputValue) {
     var levelPosition = effecs[chosenEffect].meaning / 100 * effectLevelInputValue;
-    image.style = 'color: red';
+    image.style.color = 'red';
     if ((chosenEffect === 'marvin') || (chosenEffect === 'phobos')) {
       if (chosenEffect === 'marvin') {
-        image.style = 'filter: ' + effecs[chosenEffect].effect + '(' + levelPosition + '%' + ')';
+        image.style.filter = effecs[chosenEffect].effect + '(' + levelPosition + '%' + ')';
       }
       if (chosenEffect === 'phobos') {
-        image.style = 'filter: ' + effecs[chosenEffect].effect + '(' + levelPosition + 'px' + ')';
+        image.style.filter = effecs[chosenEffect].effect + '(' + levelPosition + 'px' + ')';
       }
     } else {
-      image.style = 'filter: ' + effecs[chosenEffect].effect + '(' + levelPosition + ')';
+      if (chosenEffect === 'heat') {
+        levelPosition = 1 + (effecs[chosenEffect].meaning - 1) / 100 * effectLevelInputValue;
+      }
+      image.style.filter = effecs[chosenEffect].effect + '(' + levelPosition + ')';
     }
   };
   // обработчик на радиокнопки (при изменении состояния возращает начальное положение )
@@ -108,7 +122,8 @@
         effectLevelSlider.style.left = (effectLevelSlider.offsetLeft - shift.x) + 'px';
         effectLevelInput.value = effectLevelInput.value - shift.xLineValue;
         effectLevelLine.style.width = effectLevelInput.value + '%';
-        computePosition(effectLevelInput.value);
+
+
         startCoords = {
           x: moveEvt.clientX,
           xLineValue: effectLevelInput.value
@@ -124,6 +139,7 @@
         effectLevelInput.value = 100;
         effectLevelLine.style.width = '100%';
       }
+      computePosition(effectLevelInput.value);
     };
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
