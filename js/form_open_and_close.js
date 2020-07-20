@@ -6,9 +6,10 @@
   var uploadCansel = picturesWindow.querySelector('#upload-cancel');
   var editForm = picturesWindow.querySelector('.img-upload__overlay');
   var commentField = editForm.querySelector('.text__description');
+  var hashtagField = editForm.querySelector('.text__hashtags');
 
   var onPopupEscPress = function (evt) {
-    if ((evt.key === 'Escape') && (evt.target !== commentField)) {
+    if ((evt.key === 'Escape') && (evt.target !== commentField && evt.target !== hashtagField)) {
       evt.preventDefault();
       closePopup();
     }
