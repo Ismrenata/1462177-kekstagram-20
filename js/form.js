@@ -49,12 +49,14 @@
       if (chosenEffect === 'none') {
         image.style.filter = '';
         fieldsetEffectLevel.classList.add('visually-hidden');
+        changeFilterClass('none');
       }
     },
-    ifFormSubmit: function () {
+    ifFormSubmitandClose: function () {
       image.style = '';
       fieldsetEffectLevel.classList.add('visually-hidden');
       fieldsetFilterList.querySelector('#effect-none').checked = true;
+      changeFilterClass('none');
     },
     inputValueMathFloor: function () {
       effectLevelInput.value = Math.floor(effectLevelInput.value);
