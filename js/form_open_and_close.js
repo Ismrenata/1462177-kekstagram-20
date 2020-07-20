@@ -25,7 +25,9 @@
     body.classList.remove('modal-open');
     editForm.classList.add('hidden');
     document.removeEventListener('keydown', onPopupEscPress);
+    window.form.ifFormSubmitandClose();
     uploadField.value = ''; // сброс значения поля выбора
+    window.scale.updateScale();
   };
 
   uploadField.addEventListener('change', function () {

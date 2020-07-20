@@ -54,7 +54,8 @@
   };
   var onSuccessSubmit = function (classname) {
     if (classname === 'success') {
-      window.form.ifFormSubmit();
+      window.form.ifFormSubmitandClose();
+      window.scale.updateScale();
       window.hashValidation.ifFormSubmit();
     }
     body.classList.remove('modal-open');
@@ -66,11 +67,11 @@
     message.querySelector('button').addEventListener('click', clickOnButton);
     uploadField.value = ''; // сброс значения поля выбора
   };
-
   // проверь пожалуйста? все правильно?
   uploadSubmit.addEventListener('click', function () {
     window.hashValidation.isHashIncorrect();
     window.form.inputValueMathFloor(); // округление значения поля эффекта
+
   });
 
   form.addEventListener('submit', function (evt) {
