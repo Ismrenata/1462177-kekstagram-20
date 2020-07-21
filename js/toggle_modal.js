@@ -3,7 +3,7 @@
   var picturesWindow = document.querySelector('.pictures');
   var body = document.querySelector('body');
   var uploadField = picturesWindow.querySelector('#upload-file'); // поле выбора файла
-  var uploadCansel = picturesWindow.querySelector('#upload-cancel');
+  var uploadCancel = picturesWindow.querySelector('#upload-cancel');
   var editForm = picturesWindow.querySelector('.img-upload__overlay');
   var commentField = editForm.querySelector('.text__description');
   var hashtagField = editForm.querySelector('.text__hashtags');
@@ -30,19 +30,19 @@
     uploadField.value = ''; // сброс значения поля выбора
     window.scale.updateScale();
   };
+  window.toggleModal = function () {
+    uploadField.addEventListener('change', function () {
+      openPopup();
+      editForm.classList.remove('hidden');
+    });
 
-  uploadField.addEventListener('change', function () {
-    openPopup();
-    editForm.classList.remove('hidden');
-  });
+    uploadCancel.addEventListener('click', function () {
+      closePopup();
 
-  uploadCansel.addEventListener('click', function () {
-    closePopup();
-
-  });
-  uploadField.addEventListener('change', function () {
-    openPopup();
-    editForm.classList.remove('hidden');
-  });
-
+    });
+    uploadField.addEventListener('change', function () {
+      openPopup();
+      editForm.classList.remove('hidden');
+    });
+  };
 }());

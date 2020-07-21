@@ -21,10 +21,10 @@
 
   textHashtag.addEventListener('input', checkInput);
 
-  var isHashIncorrect = function () {
+  var isHashCorrect = function () {
     var reg = new RegExp('^#[a-zA-ZА-Яа-я0-9_]{1,20}$');
     var hashtagLine = textHashtag.value ? textHashtag.value : false;
-    var isHashСorrect = true;
+    var isCorrect = true;
     if (hashtagLine) {
       var hashtagArr = hashtagLine.toLowerCase().split(' ');
       var listOfErrors = {
@@ -59,23 +59,23 @@
       if (mistakes.length) {
         textHashtag.setCustomValidity(mistakes);
         textHashtag.classList.add('text__hashtags__warning');
-        isHashСorrect = false;
+        isCorrect = false;
       } else {
         textHashtag.setCustomValidity('');
         textHashtag.classList.remove('text__hashtags__warning');
-        isHashСorrect = true;
+        isCorrect = true;
       }
     }
 
-    return isHashСorrect;
+    return isCorrect;
   };
 
   var ifFormSubmit = function () {
     textHashtag.value = '';
     commentField.value = '';
   };
-  window.hashValidation = {
-    isHashIncorrect: isHashIncorrect,
+  window.hashValidate = {
+    isHashCorrect: isHashCorrect,
     ifFormSubmit: ifFormSubmit
   };
 }());
