@@ -10,17 +10,17 @@
 
   var socialCommentCount = bigWindow.querySelector('.social__comment-count'); // используется, чтобы добавить класс hidden
   var commentsLoader = bigWindow.querySelector('.comments-loader'); // используется, чтобы добавить класс hidden
-  var canselBigPhoto = bigWindow.querySelector('.big-picture__cancel'); // кнопка закрытия крестик
+  var cancelBigPhoto = bigWindow.querySelector('.big-picture__cancel'); // кнопка закрытия крестик
   var commentWriteField = bigWindow.querySelector('.social__footer-text'); // поле ввода коммента используется в esc
 
   // var arrow = window.data.arrowData;
 
 
-  var getSosialComment = function (commentnumber, arr) {
+  var getSocialComment = function (commentNumber, arr) {
     var socialCommentListElement = socialCommentTemplate.cloneNode(true);
-    socialCommentListElement.querySelector('.social__picture').src = arr.comments[commentnumber].avatar;
-    socialCommentListElement.querySelector('.social__picture').alt = arr.comments[commentnumber].name;
-    socialCommentListElement.querySelector('.social__text').textContent = arr.comments[commentnumber].message;
+    socialCommentListElement.querySelector('.social__picture').src = arr.comments[commentNumber].avatar;
+    socialCommentListElement.querySelector('.social__picture').alt = arr.comments[commentNumber].name;
+    socialCommentListElement.querySelector('.social__text').textContent = arr.comments[commentNumber].message;
     return socialCommentListElement;
   };
 
@@ -28,7 +28,7 @@
     var fragmentCommentBigPhoto = document.createDocumentFragment();
     var commentNumber = min;
     while (commentNumber < max) {
-      fragmentCommentBigPhoto.appendChild(getSosialComment(commentNumber, arr));
+      fragmentCommentBigPhoto.appendChild(getSocialComment(commentNumber, arr));
       commentNumber++;
     }
     similarListElement.appendChild(fragmentCommentBigPhoto);
@@ -120,7 +120,7 @@
     });
   };
   // обработчик клика по фотке, делает вывод большого изображения
-  canselBigPhoto.addEventListener('click', function () {
+  cancelBigPhoto.addEventListener('click', function () {
     closeBigPhoto();
   });
 

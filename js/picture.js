@@ -60,12 +60,12 @@
   function randomFilter() {
     var arr = []; // записываем в этот массив рандомные числа
     var max = 10; // максимальная длина массива
-    var rundomnumber; // случайное число
+    var randomNumber; // случайное число
 
     while (arr.length < max) {
-      rundomnumber = Math.floor(Math.random() * window.data.length); // создадим случайное число
-      if (arr.indexOf(rundomnumber) === -1) { // проверим есть оно  у нас или нет
-        arr.push(rundomnumber); // записываем в массив если нет
+      randomNumber = Math.floor(Math.random() * window.data.length); // создадим случайное число
+      if (arr.indexOf(randomNumber) === -1) { // проверим есть оно  у нас или нет
+        arr.push(randomNumber); // записываем в массив если нет
       }
     }
     arr.forEach(function (item, i, array) {

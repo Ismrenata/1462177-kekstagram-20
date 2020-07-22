@@ -2,14 +2,12 @@
 (function () {
   // блок отправки формы, проверки валидации и вывода сообщений об отправки
   var body = document.querySelector('body');
-  var form = body.querySelector('.img-upload__form');
   var main = body.querySelector('main');// тег main для вывода сообщений об отправки формы
   var picturesWindow = document.querySelector('.pictures');
   var editForm = picturesWindow.querySelector('.img-upload__overlay');
-  var uploadSubmit = picturesWindow.querySelector('.img-upload__submit');// кнопка отправки формы
   var uploadField = picturesWindow.querySelector('#upload-file'); // поле выбора файла
 
-  var choiseMessage = function () {
+  var chooseMessage = function () {
     var message;
     if (main.contains(main.querySelector('.success'))) {
       message = main.querySelector('.success');
@@ -27,14 +25,12 @@
   var onMessageEscPress = function (evt) {
     if (evt.key === 'Escape') {
       evt.preventDefault();
-      if (choiseMessage()) {
-        var message = choiseMessage();
-        // если один из обработчиков сработает удаляем другие
-        message.querySelector('button').removeEventListener('click', clickOnButton);
-        document.removeEventListener('click', clickOnScreen);
-        // document.removeEventListener('keydown', onMessageEscPress);
-        main.removeChild(message);
-      }
+      var message = chooseMessage();
+      // если один из обработчиков сработает удаляем другие
+      message.querySelector('button').removeEventListener('click', clickOnButton);
+      document.removeEventListener('click', clickOnScreen);
+      // document.removeEventListener('keydown', onMessageEscPress);
+      main.removeChild(message);
     }
   };
 
@@ -46,17 +42,17 @@
 
   };
   var clickOnScreen = function () {
-    var element = choiseMessage();
+    var element = chooseMessage();
     element.querySelector('button').removeEventListener('click', clickOnButton);
     document.removeEventListener('keydown', onMessageEscPress);
     document.removeEventListener('click', clickOnScreen);
     main.removeChild(element);
   };
-  var onSuccessSubmit = function (classname) {
+  var onSubmit = function (classname) {
     if (classname === 'success') {
       window.form.ifFormSubmitandClose();
       window.scale.updateScale();
-      window.hashValidation.ifFormSubmit();
+      window.hashValidate.ifFormSubmit();
     }
     body.classList.remove('modal-open');
     editForm.classList.add('hidden');
@@ -67,25 +63,11 @@
     message.querySelector('button').addEventListener('click', clickOnButton);
     uploadField.value = ''; // сброс значения поля выбора
   };
-  // проверь пожалуйста? все правильно?
-  uploadSubmit.addEventListener('click', function () {
-    window.hashValidation.isHashIncorrect();
-    window.form.inputValueMathFloor(); // округление значения поля эффекта
-
-  });
-
-  form.addEventListener('submit', function (evt) {
-    // window.hashValidation.isHashIncorrect();
-    if (window.hashValidation.isHashIncorrect()) {
-
-      window.upload(new FormData(form), function () {
-        onSuccessSubmit('success');
-      }, function () {
-        onSuccessSubmit('error');
-      });
-      evt.preventDefault();
-    }
-
-  });
-
+  window.sendForm = function (form) {
+    window.upload(new FormData(form), function () {
+      onSubmit('success');
+    }, function () {
+      onSubmit('error');
+    });
+  };
 }());
