@@ -2,6 +2,8 @@
 (function () {
   // форма открытия и редактирования изображения
 
+  var uploadSubmit = document.querySelector('.img-upload__submit');// кнопка отправки формы
+  var form = document.querySelector('.img-upload__form');
   var picturesWindow = document.querySelector('.pictures');
 
   var fieldsetFilterList = picturesWindow.querySelector('.img-upload__effects');
@@ -151,6 +153,15 @@
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
+  });
+
+  uploadSubmit.addEventListener('click', function () {
+    window.hashValidate.isHashCorrect();
+    window.form.inputValueMathFloor(); // округление значения поля эффекта
+  });
+  form.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.sendForm(form);
   });
 
 }());
