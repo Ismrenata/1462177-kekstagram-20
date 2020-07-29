@@ -2,28 +2,28 @@
 (function () {
 // отрисовка миниатюры фоток с количеством лайков и комментов на главной
 // основаная функция получает на вход данные либо моковые( в комменты поместила) либо реальные
-  var picturesTemplate = document.querySelector('#picture')
-.content
-.querySelector('.picture');
+  var picturesTemplate = document.querySelector('#picture').content.querySelector('.picture');
   var picturesWindow = document.querySelector('.pictures');
   // функция создает элементы  каждой фотографии под порядковым номером number
   var filterButtons = document.querySelector('.img-filters');
   var defaultButton = filterButtons.querySelector('#filter-default');
   var randomButton = filterButtons.querySelector('#filter-random');
   var ratingCommentButton = filterButtons.querySelector('#filter-discussed');
+  var imgFilterSwitch = document.querySelector('.img-filters');
+  var buttons = imgFilterSwitch.querySelectorAll('button');
 
-  function getArr(arr) {
+  function getArr(element) {
     var photoElement = picturesTemplate.cloneNode(true);
-    photoElement.querySelector('.picture__img').src = arr.url;
-    photoElement.querySelector('.picture__likes').textContent = arr.likes;
-    photoElement.querySelector('.picture__comments').textContent = arr.comments.length;
+    photoElement.querySelector('.picture__img').src = element.url;
+    photoElement.querySelector('.picture__likes').textContent = element.likes;
+    photoElement.querySelector('.picture__comments').textContent = element.comments.length;
     return photoElement;
   }
   // рендеринг по дефолту
   function defaultRendering(data) {
     var fragment = document.createDocumentFragment();
-    data.forEach(function (item, i, array) {
-      fragment.appendChild(getArr(array[i]));
+    data.forEach(function (item) {
+      fragment.appendChild(getArr(item));
     });
     picturesWindow.appendChild(fragment);
   }
@@ -33,17 +33,12 @@
     filterButtons.classList.remove('img-filters--inactive');
     defaultRendering(window.data);
   };
-
-
-  function removeClassButton(button) {
-    if (button.classList.contains('img-filters__button--active')) {
+  function toggleClassButton(activeButton) {
+    Array.from(buttons).forEach(function (button) {
       button.classList.remove('img-filters__button--active');
-    }
+    });
+    activeButton.classList.add('img-filters__button--active');
   }
-  function toggleClassButton(button) {
-    button.classList.toggle('img-filters__button--active');
-  }
-
   function getRank(arr) {
     return arr.comments.length; // функция рентинга - числа комментов
   }
@@ -68,20 +63,20 @@
         arr.push(randomNumber); // записываем в массив если нет
       }
     }
-    arr.forEach(function (item, i, array) {
-      array[i] = window.data[array[i]];// создаем свой массив изобъектов для рендеринга
-    });
+    for (var i = 0; i < arr.length; i++) {
+      arr[i] = window.data[arr[i]];// создаем свой массив изобъектов для рендеринга
+    }
     return arr;
   }
 
-  function filterFunction(one, two, buttoncurrent) {
-    if (!buttoncurrent.classList.contains('img-filters__button--active')) {
+  var filterFunction = function (currentButton) {
+    if (!currentButton.classList.contains('img-filters__button--active')) {
       var picturesElements = picturesWindow.querySelectorAll('.picture');
-      picturesElements.forEach(function (item, i, array) {
-        picturesWindow.removeChild(array[i]);
+      picturesElements.forEach(function (item) {
+        picturesWindow.removeChild(item);
       });
       var arrow;
-      switch (buttoncurrent) {
+      switch (currentButton) {
         case randomButton:
           arrow = randomFilter();
           break;
@@ -95,32 +90,15 @@
           break;
       }
       defaultRendering(arrow); // рендеринг нужного массива
-      removeClassButton(one);
-      removeClassButton(two);
-      toggleClassButton(buttoncurrent); // переключение класса у кнопки клика
+      toggleClassButton(currentButton); // переключение класса у кнопки клика
     }
-  }
+  };
+  imgFilterSwitch.addEventListener('click', function (evt) {
+    window.debounce(function () {
+      filterFunction(evt.target);
+    });
+  });
 
-  // функции рендеринга для колбеков в функции дребезга
-  function buttonDefaultRendering() {
-    filterFunction(randomButton, ratingCommentButton, defaultButton);
-  }
-  function buttonRandomRendering() {
-    filterFunction(defaultButton, ratingCommentButton, randomButton);
-  }
-  function buttonRatingRendering() {
-    filterFunction(defaultButton, randomButton, ratingCommentButton);
-  }
-
-  // колбеки для функции вывода дребезга
-  var onDefaultClick = window.debounce(buttonDefaultRendering);
-  var onRandomClick = window.debounce(buttonRandomRendering);
-  var onRatingCommentClick = window.debounce(buttonRatingRendering);
-
-  // обработчки на кнопки клика
-  defaultButton.addEventListener('click', onDefaultClick);
-  randomButton.addEventListener('click', onRandomClick);
-  ratingCommentButton.addEventListener('click', onRatingCommentClick);
 }());
 
 

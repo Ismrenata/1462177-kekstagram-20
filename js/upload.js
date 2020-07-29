@@ -8,10 +8,18 @@
 
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
-        onSuccess(xhr.response);
+        onSuccess(window.textMessage.success(), window.utils.TemplateType.SUCCESS);
       } else {
-        onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
+        onError(window.textMessage.error(), window.utils.TemplateType.ERROR);
       }
+    });
+
+    xhr.addEventListener('error', function () {
+      onError(window.textMessage.disconnect(), window.utils.TemplateType.ERROR);
+    });
+
+    xhr.addEventListener('timeout', function () {
+      onError(window.textMessage.timeout(xhr), window.utils.TemplateType.ERROR);
     });
 
     xhr.open('POST', URL);

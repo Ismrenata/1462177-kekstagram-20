@@ -16,19 +16,19 @@
   // var arrow = window.data.arrowData;
 
 
-  var getSocialComment = function (commentNumber, arr) {
+  var getSocialComment = function (commentNumber, element) {
     var socialCommentListElement = socialCommentTemplate.cloneNode(true);
-    socialCommentListElement.querySelector('.social__picture').src = arr.comments[commentNumber].avatar;
-    socialCommentListElement.querySelector('.social__picture').alt = arr.comments[commentNumber].name;
-    socialCommentListElement.querySelector('.social__text').textContent = arr.comments[commentNumber].message;
+    socialCommentListElement.querySelector('.social__picture').src = element.comments[commentNumber].avatar;
+    socialCommentListElement.querySelector('.social__picture').alt = element.comments[commentNumber].name;
+    socialCommentListElement.querySelector('.social__text').textContent = element.comments[commentNumber].message;
     return socialCommentListElement;
   };
 
-  function commentsRendering(min, max, arr) {
+  function commentsRendering(min, max, element) {
     var fragmentCommentBigPhoto = document.createDocumentFragment();
     var commentNumber = min;
     while (commentNumber < max) {
-      fragmentCommentBigPhoto.appendChild(getSocialComment(commentNumber, arr));
+      fragmentCommentBigPhoto.appendChild(getSocialComment(commentNumber, element));
       commentNumber++;
     }
     similarListElement.appendChild(fragmentCommentBigPhoto);
@@ -64,15 +64,15 @@
   };
 
   // функция заполняет информацией изображения: адрес, лайки комменты, описание в большое окно
-  var bidPhotoCompilation = function (arr) {
-    bigWindow.querySelector('.big-picture__img img').src = arr.url;
-    bigWindow.querySelector('.likes-count').textContent = arr.likes;
-    bigWindow.querySelector('.comments-count').textContent = arr.comments.length;
-    bigWindow.querySelector('.social__caption').textContent = arr.description;
+  var bidPhotoCompilation = function (element) {
+    bigWindow.querySelector('.big-picture__img img').src = element.url;
+    bigWindow.querySelector('.likes-count').textContent = element.likes;
+    bigWindow.querySelector('.comments-count').textContent = element.comments.length;
+    bigWindow.querySelector('.social__caption').textContent = element.description;
     socialCommentCount.classList.add('hidden');
     commentsLoader.classList.add('hidden');
     bigWindow.classList.remove('hidden');
-    commentFragmentCreation(arr);
+    commentFragmentCreation(element);
   };
   var onBigPhotoEscPress = function (evt) {
     if (evt.key === 'Escape' && evt.target !== commentWriteField) {

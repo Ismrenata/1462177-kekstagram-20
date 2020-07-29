@@ -8,16 +8,16 @@
       if (xhr.status === 200) {
         onSuccess(xhr.response);
       } else {
-        onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
+        onError(window.textMessage.error(), window.utils.TemplateType.ERROR);
       }
     });
 
     xhr.addEventListener('error', function () {
-      onError('Произошла ошибка соединения');
+      onError(window.textMessage.disconnect(), window.utils.TemplateType.ERROR);
     });
 
     xhr.addEventListener('timeout', function () {
-      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      onError(window.textMessage.timeout(xhr), window.utils.TemplateType.ERROR);
     });
 
     xhr.timeout = 10000; // 10s

@@ -1,11 +1,9 @@
 'use strict';
 (function () {
   // форма открытия и редактирования изображения
-
-  var uploadSubmit = document.querySelector('.img-upload__submit');// кнопка отправки формы
-  var form = document.querySelector('.img-upload__form');
   var picturesWindow = document.querySelector('.pictures');
-
+  var uploadField = picturesWindow.querySelector('#upload-file'); // поле выбора файла
+  var uploadCancel = picturesWindow.querySelector('#upload-cancel');
   var fieldsetFilterList = picturesWindow.querySelector('.img-upload__effects');
   var fieldsetEffectLevel = picturesWindow.querySelector('.img-upload__effect-level');
 
@@ -14,6 +12,8 @@
   var effectLevelLine = grayLineEffect.querySelector('.effect-level__depth'); // живая изменяющаяся линия
   var effectLevelInput = fieldsetEffectLevel.querySelector('.effect-level__value'); // значение самого эффекта
   var image = document.querySelector('.img-upload__preview img'); // изображение кота
+  var editForm = picturesWindow.querySelector('.img-upload__overlay');
+  var hashtagField = editForm.querySelector('.text__hashtags');
 
   var nameEffects = ['none', 'chrome', 'sepia', 'marvin', 'phobos', 'heat'];
   var effecs = {
@@ -47,14 +47,14 @@
   var chosenEffect = 'none';
 
   window.form = {
-    ifOriginalEffect: function () {
+    isOriginalEffect: function () {
       if (chosenEffect === 'none') {
         image.style.filter = '';
         fieldsetEffectLevel.classList.add('visually-hidden');
         changeFilterClass('none');
       }
     },
-    ifFormSubmitandClose: function () {
+    isFormSubmitandClose: function () {
       image.style = '';
       fieldsetEffectLevel.classList.add('visually-hidden');
       fieldsetFilterList.querySelector('#effect-none').checked = true;
@@ -62,12 +62,23 @@
     },
     inputValueMathFloor: function () {
       effectLevelInput.value = Math.floor(effectLevelInput.value);
+    },
+    clear: function () {
+      window.form.isOriginalEffect();
+      window.form.isFormSubmitandClose();
+      window.scale.updateScale();
+      window.hashValidate.isFormSubmit();
+      uploadField.value = '';
+    },
+    clearEffect: function () {
+      image.style.filter = '';
+      fieldsetEffectLevel.classList.add('visually-hidden');
     }
   };
   function changeFilterClass(chosen) {
-    nameEffects.forEach(function (item, i, arr) {
-      if (image.classList.contains('effects__preview--' + arr[i])) {
-        image.classList.remove('effects__preview--' + arr[i]);
+    nameEffects.forEach(function (item) {
+      if (image.classList.contains('effects__preview--' + item)) {
+        image.classList.remove('effects__preview--' + item);
       }
     });
     image.classList.add('effects__preview--' + chosen);
@@ -76,8 +87,7 @@
     chosenEffect = evt.target.value;
     changeFilterClass(chosenEffect);
     if (chosenEffect === 'none') {
-      image.style.filter = '';
-      fieldsetEffectLevel.classList.add('visually-hidden');
+      window.form.clearEffect();
     } else {
       fieldsetEffectLevel.classList.remove('visually-hidden');
       image.style.filter = effecs[chosenEffect].filter;
@@ -103,6 +113,7 @@
       }
       image.style.filter = effecs[chosenEffect].effect + '(' + levelPosition + ')';
     }
+
   };
   // обработчик на радиокнопки (при изменении состояния возращает начальное положение )
   fieldsetFilterList.addEventListener('change', function (evt) {
@@ -154,14 +165,13 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
-
-  uploadSubmit.addEventListener('click', function () {
+  uploadField.addEventListener('change', function () {
+    window.utils.showModal();
+  });
+  uploadCancel.addEventListener('click', function () {
+    window.utils.hideModal();
+  });
+  hashtagField.addEventListener('input', function () {
     window.hashValidate.isHashCorrect();
-    window.form.inputValueMathFloor(); // округление значения поля эффекта
   });
-  form.addEventListener('submit', function (evt) {
-    evt.preventDefault();
-    window.sendForm(form);
-  });
-
 }());
